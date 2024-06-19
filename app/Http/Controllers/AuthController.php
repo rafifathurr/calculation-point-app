@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function authentication(Request $request)
     {
         try {
-            $email_or_username = $request->input('username');
+            $email_or_username = $request->input('email_or_username');
             $field = filter_var($email_or_username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
             $request->merge([$field => $email_or_username]);
 
@@ -42,13 +42,13 @@ class AuthController extends Controller
                 } else {
                     return redirect()
                         ->back()
-                        ->withErrors(['username' => 'These credentials do not match our records.'])
+                        ->withErrors(['email_or_username' => 'These credentials do not match our records.'])
                         ->withInput();
                 }
             } else {
                 return redirect()
                     ->back()
-                    ->withErrors(['username' => 'These credentials do not match our records.'])
+                    ->withErrors(['email_or_username' => 'These credentials do not match our records.'])
                     ->withInput();
             }
         } catch (\Throwable $th) {
@@ -61,6 +61,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return redirect()->route('signin');
     }
 }

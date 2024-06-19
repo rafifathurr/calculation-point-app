@@ -21,8 +21,8 @@ Route::get('signout', [AuthController::class, 'signout'])->name('signout');
 /**
  * Home Route
  */
-// Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/', function () {
         return view('home');
     })->name('home');
-// });
+});
