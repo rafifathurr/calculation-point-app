@@ -11,5 +11,8 @@
 <script src="{{ asset('js/chart.flot.sampledata.js') }}"></script>
 <script src="{{ asset('js/dashboard.sampledata.js') }}"></script>
 
+<script src="{{ asset('lib/datatables.net/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('lib/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
+
 @include('js.alert')
 @stack('js-bottom')

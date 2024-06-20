@@ -15,6 +15,9 @@
     <link href="{{ asset('lib/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('lib/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" />
 
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('lib/datatables.net-bs4/dataTables.bootstrap4.css') }}" />
+
     <!-- azia CSS -->
     <link rel="stylesheet" href="{{ asset('css/azia.css') }}" />
 

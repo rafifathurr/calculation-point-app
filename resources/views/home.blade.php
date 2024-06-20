@@ -13,5 +13,7 @@
             <!-- az-content-body -->
         </div>
     </div>
-@include('js.home')
+    @push('js-bottom')
+        @include('js.home')
+    @endpush
 @endsection
