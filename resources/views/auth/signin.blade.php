@@ -14,8 +14,8 @@
                     @csrf
                     <div class="form-group">
                         <label for="email_or_username">Email or Username</label>
-                        <input type="text" class="form-control @error('email_or_username') is-invalid @enderror" name="email_or_username"
-                            placeholder="Enter your email or username" value="{{ old('username') }}" required>
+                        <input type="text" class="form-control @error('email_or_username') is-invalid @enderror"
+                            name="email_or_username" value="{{ old('username') }}" required>
                         @error('email_or_username')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -26,8 +26,8 @@
                         <label for="password">Password</label>
                         <div class="input-group">
                             <input type="password" class="form-control" id="password" name="password"
-                                placeholder="Enter your password">
-                            <span class="input-group-text" id="togglePassword" onclick="togglePasswordVisibility()" value="{{ old('password') }}" required>
+                                value="{{ old('password') }}" required>
+                            <span class="input-group-text" id="togglePassword" onclick="togglePasswordVisibility()">
                                 <i class="fas fa-eye" id="eye-icon"></i>
                             </span>
                         </div>

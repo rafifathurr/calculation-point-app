@@ -18,7 +18,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $data['dt_route'] = route('user.dataTable'); // Route DataTables
+        $data['dt_route'] = route('user-management.dataTable'); // Route DataTables
         return view('user_management.index', $data);
     }
 
@@ -72,7 +72,6 @@ class UserManagementController extends Controller
     public function store(Request $request)
     {
         try {
-
             // Request Validation
             $request->validate([
                 'name' => 'required|string',
@@ -93,8 +92,6 @@ class UserManagementController extends Controller
 
             // Check Validation Field
             if (is_null($username_check) && is_null($email_check)) {
-
-
                 DB::beginTransaction();
 
                 // Query Store User
@@ -105,23 +102,17 @@ class UserManagementController extends Controller
                     'password' => bcrypt($request->password),
                 ]);
 
-                /**
-                 * Assign Role of User Based on Requested
-                 */
+                // Assigning Role of User
                 $model_has_role = $user->assignRole($request->roles);
 
-                /**
-                 * Validation Create User Record and Assign Role User
-                 */
+                // Checking Store Data
                 if ($user && $model_has_role) {
                     DB::commit();
                     return redirect()
                         ->route('user-management.index')
                         ->with(['success' => 'Berhasil Menambahkan User']);
                 } else {
-                    /**
-                     * Failed Store Record
-                     */
+                    // Failed and Rollback
                     DB::rollBack();
                     return redirect()
                         ->back()
@@ -148,16 +139,11 @@ class UserManagementController extends Controller
     public function show(string $id)
     {
         try {
-
             $user = User::find($id);
 
-            /**
-             * Validation User id
-             */
+            // Validation User Request
             if (!is_null($user)) {
-                /**
-                 * User Role Configuration
-                 */
+                // Getting Role
                 $exploded_raw_role = explode('-', $user->getRoleNames()[0]);
                 $data['user'] = $user;
                 $data['user_role'] = ucwords(implode(' ', $exploded_raw_role));
@@ -181,26 +167,13 @@ class UserManagementController extends Controller
     public function edit(string $id)
     {
         try {
-            /**
-             * Get User Record from id
-             */
             $user = User::find($id);
 
-            /**
-             * Validation User id
-             */
+            // Validation User Request
             if (!is_null($user)) {
-
-                $data['user'] = $user;
-                /**
-                 * Get All Role
-                 */
-                $data['roles'] = Role::all();
-
-                /**
-                 * Disabled Edit Role with Same User Logged in
-                 */
-                $data['role_disabled'] = $id == Auth::user()->id ? 'disabled' : '';
+                $data['user'] = $user; // User Record
+                $data['roles'] = Role::all(); // List of Roles
+                $data['role_disabled'] = $id == Auth::user()->id ? 'disabled' : ''; // Disabled Changing Role User It Self
 
                 return view('user_management.edit', $data);
             } else {
@@ -221,9 +194,7 @@ class UserManagementController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            /**
-             * Validation Request Body Variables
-             */
+            // Request Validation
             $request->validate([
                 'name' => 'required|string',
                 'email' => 'required|email',
@@ -231,9 +202,7 @@ class UserManagementController extends Controller
                 'roles' => 'required',
             ]);
 
-            /**
-             * Validation Unique Field Record
-             */
+            // Validation Field
             $username_check = User::whereNull('deleted_at')
                 ->where('username', $request->username)
                 ->where('id', '!=', $id)
@@ -243,39 +212,24 @@ class UserManagementController extends Controller
                 ->where('id', '!=', $id)
                 ->first();
 
-            /**
-             * Validation Unique Field Record
-             */
+            // Check Validation Field
             if (is_null($username_check) && is_null($email_check)) {
-                /**
-                 * Get User Record from id
-                 */
+                // Get User Record
                 $user = User::find($id);
 
-                /**
-                 * Validation User id
-                 */
+                // Validation User
                 if (!is_null($user)) {
-                    /**
-                     * Validation Password Request
-                     */
+                    // Checking Password Request
                     if (isset($request->password)) {
-                        /**
-                         * Validation Request Body Variables
-                         */
+                        // Validation Password
                         $request->validate([
                             'password' => 'required',
                             're_password' => 'required|same:password',
                         ]);
 
-                        /**
-                         * Begin Transaction
-                         */
                         DB::beginTransaction();
 
-                        /**
-                         * Update User Record
-                         */
+                        // Update User Record With Password Request
                         $user_update = User::where('id', $id)->update([
                             'name' => $request->name,
                             'email' => $request->email,
@@ -283,14 +237,9 @@ class UserManagementController extends Controller
                             'password' => bcrypt($request->password),
                         ]);
                     } else {
-                        /**
-                         * Begin Transaction
-                         */
                         DB::beginTransaction();
 
-                        /**
-                         * Update User Record
-                         */
+                        // Update User Record Without Password Request
                         $user_update = User::where('id', $id)->update([
                             'name' => $request->name,
                             'email' => $request->email,
@@ -298,32 +247,22 @@ class UserManagementController extends Controller
                         ]);
                     }
 
-                    /**
-                     * Validation Update Role Equals Default
-                     */
+                    // Validation Request Role
                     if ($user->getRoleNames()[0] != $request->roles) {
-                        /**
-                         * Assign Role of User Based on Requested
-                         */
+                        // Remove Last Role
                         $model_has_role_delete = $user->removeRole($user->getRoleNames()[0]);
 
-                        /**
-                         * Assign Role of User Based on Requested
-                         */
+                        // Assigning New Role
                         $model_has_role_update = $user->assignRole($request->roles);
 
-                        /**
-                         * Validation Update User Record and Update Assign Role User
-                         */
+                        // Validation Update User
                         if ($user_update && $model_has_role_delete && $model_has_role_update) {
                             DB::commit();
                             return redirect()
                                 ->route('user-management.index')
                                 ->with(['success' => 'Berhasil Perbarui User']);
                         } else {
-                            /**
-                             * Failed Store Record
-                             */
+                            // Failed and Rollback
                             DB::rollBack();
                             return redirect()
                                 ->back()
@@ -331,18 +270,14 @@ class UserManagementController extends Controller
                                 ->withInput();
                         }
                     } else {
-                        /**
-                         * Validation Update User Record
-                         */
+                        // Validation Update User
                         if ($user_update) {
                             DB::commit();
                             return redirect()
                                 ->route('user-management.index')
                                 ->with(['success' => 'Berhasil Perbarui User']);
                         } else {
-                            /**
-                             * Failed Store Record
-                             */
+                            // Failed and Rollback
                             DB::rollBack();
                             return redirect()
                                 ->back()
@@ -375,28 +310,19 @@ class UserManagementController extends Controller
     public function destroy(string $id)
     {
         try {
-            /**
-             * Begin Transaction
-             */
             DB::beginTransaction();
 
-            /**
-             * Update User Record
-             */
+            // Destroy with Softdelete
             $user_destroy = User::where('id', $id)->update([
                 'deleted_at' => date('Y-m-d H:i:s'),
             ]);
 
-            /**
-             * Validation Update User Record
-             */
+            // Validation Destroy User
             if ($user_destroy) {
                 DB::commit();
                 session()->flash('success', 'Berhasil Hapus User');
             } else {
-                /**
-                 * Failed Store Record
-                 */
+                // Failed and Rollback
                 DB::rollBack();
                 session()->flash('failed', 'Gagal Hapus User');
             }

@@ -44,7 +44,7 @@ Route::group(['middleware' => ['role:owner']], function () {
     /**
      * Route User Management
      */
-    Route::group(['controller' => UserManagementController::class, 'prefix' => 'user-management', 'as' => 'user.'], function () {
+    Route::group(['controller' => UserManagementController::class, 'prefix' => 'user-management', 'as' => 'user-management.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('user-management', UserManagementController::class)->parameters(['user-management' => 'id']);
