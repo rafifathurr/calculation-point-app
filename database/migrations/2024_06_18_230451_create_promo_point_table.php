@@ -21,12 +21,12 @@ return new class extends Migration
             $table->date('expired_on');
             $table->text('description')->nullable();
             $table->integer('created_by');
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->integer('updated_by');
-            $table->timestamp('updated_at');
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
-
+            
             // Foreign Key
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');

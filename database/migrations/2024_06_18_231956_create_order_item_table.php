@@ -20,9 +20,9 @@ return new class extends Migration
             $table->bigInteger('price')->nullable();
             $table->double('point')->nullable();
             $table->integer('created_by');
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->integer('updated_by');
-            $table->timestamp('updated_at');
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
 

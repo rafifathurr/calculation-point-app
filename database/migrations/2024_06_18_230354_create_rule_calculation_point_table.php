@@ -21,9 +21,9 @@ return new class extends Migration
             $table->integer('month')->nullable()->comment('Only valid for promo in specify day and month');
             $table->text('description')->nullable();
             $table->integer('created_by');
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->integer('updated_by');
-            $table->timestamp('updated_at');
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
 
