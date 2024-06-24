@@ -23,9 +23,9 @@
                 <li class="nav-item">
                     <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Master</a>
                     <nav class="az-menu-sub">
-                        <a href="page-signin.html" class="nav-link">Rule Point</a>
-                        <a href="page-signup.html" class="nav-link">Promo</a>
+                        <a href="{{ route('rule-calculation-point.index') }}" class="nav-link">Rule Point</a>
                         <a href="page-signup.html" class="nav-link">Menu</a>
+                        <a href="page-signup.html" class="nav-link">Promo</a>
                     </nav>
                 </li>
                 <li class="nav-item">

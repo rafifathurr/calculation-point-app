@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,7 +124,7 @@ class UserManagementController extends Controller
                     ->with(['failed' => 'Email atau Username Sudah Terdaftar'])
                     ->withInput();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->with(['failed' => $e->getMessage()])
@@ -154,7 +153,7 @@ class UserManagementController extends Controller
                     ->back()
                     ->with(['failed' => 'Permintaan Gagal!']);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->with(['failed' => $e->getMessage()]);
@@ -181,7 +180,7 @@ class UserManagementController extends Controller
                     ->back()
                     ->with(['failed' => 'Permintaan Gagal!']);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->with(['failed' => $e->getMessage()]);
@@ -296,7 +295,7 @@ class UserManagementController extends Controller
                     ->with(['failed' => 'Email or Username Already Exist'])
                     ->withInput();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->with(['failed' => $e->getMessage()])
@@ -326,7 +325,7 @@ class UserManagementController extends Controller
                 DB::rollBack();
                 session()->flash('failed', 'Gagal Hapus User');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             session()->flash('failed', $e->getMessage());
         }
     }

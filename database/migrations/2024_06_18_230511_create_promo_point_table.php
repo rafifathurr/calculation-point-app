@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('promo_point', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
+            $table->integer('menu_id');
             $table->string('name');
             $table->tinyInteger('status')->comment('0 as Inactive and 1 as Active');
             $table->bigInteger('point');
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
             
             // Foreign Key
+            $table->foreign('menu_id')->references('id')->on('menu');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->foreign('deleted_by')->references('id')->on('users');

@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->tinyInteger('status')->comment('0 as Inactive and 1 as Active');
             $table->double('percentage');
-            $table->integer('day')->nullable()->comment('Only valid for promo in specify day and month');
-            $table->integer('month')->nullable()->comment('Only valid for promo in specify day and month');
+            $table->integer('day')->nullable()->comment('Only valid for promo in specify day and month and year');
+            $table->integer('month')->nullable()->comment('Only valid for promo in specify day and month and year');
+            $table->integer('year')->nullable()->comment('Only valid for promo in specify day and month and year');
             $table->text('description')->nullable();
             $table->integer('created_by');
             $table->timestamp('created_at')->useCurrent();

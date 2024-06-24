@@ -42,7 +42,7 @@
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                     </div>
                     <div class="form-group">
-                        <label for="re_password">Ulangi Password <span class="text-danger">*</span></label>
+                        <label for="re_password">Ulangi Password</label>
                         <input type="password" class="form-control" id="re_password" name="re_password"
                             placeholder="Ulangi Password">
                     </div>

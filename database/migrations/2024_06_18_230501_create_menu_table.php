@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('menu', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
-            $table->integer('promo_point_id')->nullable();
             $table->string('name');
             $table->text('attachment');
             $table->bigInteger('price')->nullable();
-            $table->bigInteger('point')->nullable();
             $table->text('description')->nullable();
             $table->integer('created_by');
             $table->timestamp('created_at')->useCurrent();
