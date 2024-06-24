@@ -7,8 +7,8 @@
             showCancelButton: true,
             allowOutsideClick: false,
             customClass: {
-                confirmButton: 'btn btn-primary mr-2 mb-3',
-                cancelButton: 'btn btn-danger mb-3',
+                confirmButton: 'btn btn-primary rounded-5 mr-2 mb-3',
+                cancelButton: 'btn btn-danger rounded-5 mb-3',
             },
             buttonsStyling: false,
             confirmButtonText: 'Ya',
@@ -67,8 +67,8 @@
             showCancelButton: true,
             allowOutsideClick: false,
             customClass: {
-                confirmButton: 'btn btn-primary mr-2 mb-3',
-                cancelButton: 'btn btn-danger mb-3',
+                confirmButton: 'btn btn-primary rounded-5 mr-2 mb-3',
+                cancelButton: 'btn btn-danger rounded-5 mb-3',
             },
             buttonsStyling: false,
             confirmButtonText: 'Ya',

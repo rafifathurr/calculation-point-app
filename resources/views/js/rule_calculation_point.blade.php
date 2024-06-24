@@ -7,8 +7,8 @@
             showCancelButton: true,
             allowOutsideClick: false,
             customClass: {
-                confirmButton: 'btn btn-primary mr-2 mb-3',
-                cancelButton: 'btn btn-danger mb-3',
+                confirmButton: 'btn btn-primary rounded-5 mr-2 mb-3',
+                cancelButton: 'btn btn-danger rounded-5 mb-3',
             },
             buttonsStyling: false,
             confirmButtonText: 'Ya',
@@ -75,6 +75,7 @@
                 $('#year').attr('required', false);
                 $('#month').attr('required', false);
                 $('#day').attr('required', false);
+                $('#year').val('');
             }
         } else {
             if (element.value == 1) {
@@ -84,11 +85,11 @@
                     $('#year').attr('required', true);
                     $('#month').attr('required', true);
                     $('#day').attr('required', true);
+                    $('#year').val('').change();
                 }
             }
         }
-        
-        $('#year').val('');
+
         $('#month').val('');
         $('#day').val('');
     }
@@ -170,8 +171,8 @@
             showCancelButton: true,
             allowOutsideClick: false,
             customClass: {
-                confirmButton: 'btn btn-primary mr-2 mb-3',
-                cancelButton: 'btn btn-danger mb-3',
+                confirmButton: 'btn btn-primary rounded-5 mr-2 mb-3',
+                cancelButton: 'btn btn-danger rounded-5 mb-3',
             },
             buttonsStyling: false,
             confirmButtonText: 'Ya',

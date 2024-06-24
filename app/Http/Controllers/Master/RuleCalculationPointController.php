@@ -231,7 +231,23 @@ class RuleCalculationPointController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            // Rule Calculation Detail by Requested Id
+            $rule_calculation_point = RuleCalculationPoint::find($id);
+
+            // Check Request Validation
+            if (!is_null($rule_calculation_point)) {
+                return view('master.rule_calculation_point.edit', compact('rule_calculation_point'));
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Data Tidak Tersedia']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -239,7 +255,91 @@ class RuleCalculationPointController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            // Request Validation
+            $request->validate([
+                'name' => 'required',
+                'percentage' => 'required',
+                'status' => 'required',
+                'availability' => 'required',
+            ]);
+
+            // Get Rule Calculation Record
+            $rule_calculation_point = RuleCalculationPoint::find($id);
+
+            // Validation User
+            if (!is_null($rule_calculation_point)) {
+                if ($request->availability == 0) {
+                    DB::beginTransaction();
+
+                    // Update Rule Calculation Point
+                    $rule_calculation_point_update = RuleCalculationPoint::where('id', $id)->update([
+                        'name' => $request->name,
+                        'percentage' => $request->percentage,
+                        'status' => $request->status,
+                        'day' => null,
+                        'month' => null,
+                        'year' => null,
+                        'description' => $request->description,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+
+                    // Checking Update Data
+                    if ($rule_calculation_point_update) {
+                        DB::commit();
+                        return redirect()
+                            ->route('rule-calculation-point.index')
+                            ->with(['success' => 'Berhasil Ubah Rule Kalkulasi Point']);
+                    } else {
+                        // Failed and Rollback
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Gagal Ubah Rule Kalkulasi Point'])
+                            ->withInput();
+                    }
+                } else {
+                    DB::beginTransaction();
+
+                    // Update Rule Calculation Point
+                    $rule_calculation_point_update = RuleCalculationPoint::where('id', $id)->update([
+                        'name' => $request->name,
+                        'percentage' => $request->percentage,
+                        'status' => $request->status,
+                        'day' => $request->day,
+                        'month' => $request->month,
+                        'year' => $request->year == '' ? null : $request->year,
+                        'description' => $request->description,
+                        'created_by' => Auth::user()->id,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+
+                    // Checking Update Data
+                    if ($rule_calculation_point_update) {
+                        DB::commit();
+                        return redirect()
+                            ->route('rule-calculation-point.index')
+                            ->with(['success' => 'Berhasil Ubah Rule Kalkulasi Point']);
+                    } else {
+                        // Failed and Rollback
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Gagal Ubah Rule Kalkulasi Point'])
+                            ->withInput();
+                    }
+                }
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Permintaan Gagal!']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
