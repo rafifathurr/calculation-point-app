@@ -47,11 +47,11 @@
                             placeholder="Ulangi Password">
                     </div>
                     <div class="float-right mt-3">
-                        <a href="{{ route('user-management.index') }}" class="btn btn-sm btn-danger">
+                        <a href="{{ route('user-management.index') }}" class="btn btn-sm btn-danger rounded-5">
                             <i class="fas fa-arrow-left"></i>
                             Kembali
                         </a>
-                        <button type="submit" class="btn btn-sm btn-primary mx-2">
+                        <button type="submit" class="btn btn-sm btn-primary rounded-5 mx-2">
                             Simpan
                             <i class="fas fa-check"></i>
                         </button>

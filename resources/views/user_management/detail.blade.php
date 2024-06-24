@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="float-right mt-3">
-                        <a href="{{ route('user-management.index') }}" class="btn btn-sm btn-danger">
+                        <a href="{{ route('user-management.index') }}" class="btn btn-sm btn-danger rounded-5">
                             <i class="fas fa-arrow-left"></i>
                             Kembali
                         </a>
