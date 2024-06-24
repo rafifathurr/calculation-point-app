@@ -16,8 +16,8 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama </th>
-                                <th>Berlaku Setiap </th>
+                                <th>Nama</th>
+                                <th>Berlaku Setiap</th>
                                 <th>Status</th>
                                 <th>Persentase Kalkulasi</th>
                                 <th>Aksi</th>

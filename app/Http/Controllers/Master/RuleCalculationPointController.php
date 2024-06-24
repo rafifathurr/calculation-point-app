@@ -50,15 +50,17 @@ class RuleCalculationPointController extends Controller
                         $availability = $data->day . ' ' . date('F', mktime(0, 0, 0, $data->month, 10));
                         return $availability;
                     }
+                } else {
+                    return 'Setiap Saat';
                 }
             })
             ->addColumn('status', function ($data) {
                 $status = '<div align="center">';
                 // Get Status Condition
                 if ($data->status == 0) {
-                    $status .= '<span class="badge badge-danger p-1 px-2">Tidak Aktif</span>';
+                    $status .= '<span class="badge badge-danger p-1 px-2 rounded-pill">Tidak Aktif</span>';
                 } elseif ($data->status == 1) {
-                    $status .=  '<span class="badge badge-success p-1 px-3">Aktif</span>';
+                    $status .= '<span class="badge badge-success p-1 px-3 rounded-pill">Aktif</span>';
                 }
                 return $status;
             })
@@ -70,7 +72,7 @@ class RuleCalculationPointController extends Controller
                 $btn_action = '<div align="center">';
                 $btn_action .= '<a href="' . route('rule-calculation-point.show', ['id' => $data->id]) . '" class="btn btn-sm btn-primary rounded-5" title="Detail"><i class="fas fa-eye"></i></a>';
                 $btn_action .= '<a href="' . route('rule-calculation-point.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning rounded-5 ml-2" title="Ubah"><i class="fas fa-pencil-alt"></i></a>';
-                $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
+                $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
                 $btn_action .= '</div>';
                 return $btn_action;
             })
@@ -100,14 +102,14 @@ class RuleCalculationPointController extends Controller
                 } else {
                     if (is_null($request->year) && !is_null($request->month)) {
                         $days = [];
-                        for ($day = 1; $day <= $d = cal_days_in_month(CAL_GREGORIAN, $request->month, 2004); $day++) {
+                        for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $request->month, 2004)); $day++) {
                             $days[$day] = $day;
                         }
                         return response()->json($days, 200);
                     } else {
                         if (!is_null($request->year) && !is_null($request->month)) {
                             $days = [];
-                            for ($day = 1; $day <= $d = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year); $day++) {
+                            for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year)); $day++) {
                                 $days[$day] = $day;
                             }
                             return response()->json($days, 200);
@@ -205,7 +207,23 @@ class RuleCalculationPointController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            // Rule Calculation Detail by Requested Id
+            $rule_calculation_point = RuleCalculationPoint::find($id);
+
+            // Check Request Validation
+            if (!is_null($rule_calculation_point)) {
+                return view('master.rule_calculation_point.detail', compact('rule_calculation_point'));
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Data Tidak Tersedia']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
+        }
     }
 
     /**

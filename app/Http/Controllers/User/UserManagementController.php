@@ -53,7 +53,7 @@ class UserManagementController extends Controller
 
                 // Validation Current User Can't Delete it Self
                 if (Auth::user()->id != $data->id) {
-                    $btn_action .= '<button class="btn btn-sm btn-danger ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
+                    $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
                 }
                 $btn_action .= '</div>';
                 return $btn_action;
