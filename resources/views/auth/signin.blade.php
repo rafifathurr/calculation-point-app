@@ -32,7 +32,7 @@
                             </span>
                         </div>
                     </div><!-- form-group -->
-                    <button type="submit" class="btn btn-primary btn-block fw-bold">Sign In</button>
+                    <button type="submit" class="btn btn-primary btn-block rounded-5 fw-bold">Sign In</button>
                 </form>
             </div><!-- az-signin-header -->
             <div class="az-signin-footer">

@@ -109,6 +109,7 @@ class RuleCalculationPointController extends Controller
             if ($request->availability == 0) {
                 DB::beginTransaction();
 
+                // Create Record
                 $rule_calculation_point = RuleCalculationPoint::create([
                     'name' => $request->name,
                     'percentage' => $request->percentage,
@@ -333,7 +334,7 @@ class RuleCalculationPointController extends Controller
             } else {
                 // Failed and Rollback
                 DB::rollBack();
-                session()->flash('failed', 'Gagal Hapus User');
+                session()->flash('failed', 'Gagal Hapus Rule Calculation');
             }
         } catch (\Exception $e) {
             session()->flash('failed', $e->getMessage());

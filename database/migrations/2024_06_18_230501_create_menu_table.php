@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
             $table->string('name');
-            $table->text('attachment');
+            $table->text('attachment')->nullable();
             $table->bigInteger('price')->nullable();
             $table->text('description')->nullable();
             $table->integer('created_by');

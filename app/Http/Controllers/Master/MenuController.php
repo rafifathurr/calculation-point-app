@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class MenuController extends Controller
 {
@@ -12,7 +17,8 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        $data['dt_route'] = route('menu.dataTable'); // Route DataTables
+        return view('master.menu.index', $data);
     }
 
     /**
@@ -20,7 +26,36 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return view('master.menu.create');
+    }
+
+    /**
+     * Show datatable of resource.
+     */
+    public function dataTable()
+    {
+        $list_of_users = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Rule Calculation Point
+
+        // DataTables Yajraa Configuration
+        $dataTable = DataTables::of($list_of_users)
+            ->addIndexColumn()
+            ->addColumn('price', function ($data) {
+                // Condition Availability
+                return 'Rp. ' . number_format($data->price, 0, ',', '.') . ',-';
+            })
+            ->addColumn('action', function ($data) {
+                $btn_action = '<div align="center">';
+                $btn_action .= '<a href="' . route('menu.show', ['id' => $data->id]) . '" class="btn btn-sm btn-primary rounded-5" title="Detail"><i class="fas fa-eye"></i></a>';
+                $btn_action .= '<a href="' . route('menu.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning rounded-5 ml-2" title="Ubah"><i class="fas fa-pencil-alt"></i></a>';
+                $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
+                $btn_action .= '</div>';
+                return $btn_action;
+            })
+            ->only(['name', 'price', 'action'])
+            ->rawColumns(['action'])
+            ->make(true);
+
+        return $dataTable;
     }
 
     /**
@@ -28,7 +63,104 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            // Request Validation
+            $request->validate([
+                'name' => 'required',
+                'price' => 'required',
+                'attachment' => 'required',
+            ]);
+
+            // Validation Menu
+            $menu_name_validation = Menu::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->where('name', 'like', '%' . $request->name . '%')
+                ->first();
+
+            // Va;idation Condition Field
+            if (is_null($menu_name_validation)) {
+                DB::beginTransaction();
+
+                // Create Record
+                $menu = Menu::lockforUpdate()->create([
+                    'name' => $request->name,
+                    'price' => $request->price,
+                    'description' => $request->description,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
+
+                // Checking Store Data
+                if ($menu) {
+                    // Image Path
+                    $path = 'public/uploads/menu';
+                    $path_store = 'storage/uploads/menu';
+
+                    // Check Exsisting Path
+                    if (!Storage::exists($path)) {
+                        // Create new Path Directory
+                        Storage::makeDirectory($path);
+                    }
+
+                    // File Upload Configuration
+                    $exploded_name = explode(' ', strtolower($request->name));
+                    $name_menu_config = implode('_', $exploded_name);
+                    $file = $request->file('attachment');
+                    $file_name = $menu->id . '_' . $name_menu_config . '.' . $file->getClientOriginalExtension();
+
+                    // Uploading File
+                    $file->storePubliclyAs($path, $file_name);
+
+                    // Check Upload Success
+                    if (Storage::exists($path . '/' . $file_name)) {
+
+                        // Update Record for Attachment
+                        $menu_update = Menu::where('id', $menu->id)->update([
+                            'attachment' => $path_store . '/' . $file_name,
+                        ]);
+
+                        // Validation Update Attachment Menu Record
+                        if ($menu_update) {
+                            DB::commit();
+                            return redirect()
+                                ->route('menu.index')
+                                ->with(['success' => 'Berhasil Menambahkan Menu']);
+                        } else {
+                            // Failed and Rollback
+                            DB::rollBack();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Gagal Update Foto Menu'])
+                                ->withInput();
+                        }
+                    } else {
+                        // Failed and Rollback
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Gagal Upload Foto Menu'])
+                            ->withInput();
+                    }
+                } else {
+                    // Failed and Rollback
+                    DB::rollBack();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Gagal Tambah Menu'])
+                        ->withInput();
+                }
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Nama Menu Sudah Tersedia'])
+                    ->withInput();
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**
@@ -60,6 +192,26 @@ class MenuController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            // Destroy with Softdelete
+            $menu_destroy = Menu::where('id', $id)->update([
+                'deleted_by' => Auth::user()->id,
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            // Validation Destroy Menu Point
+            if ($menu_destroy) {
+                DB::commit();
+                session()->flash('success', 'Berhasil Hapus Menu Point');
+            } else {
+                // Failed and Rollback
+                DB::rollBack();
+                session()->flash('failed', 'Gagal Hapus Menu');
+            }
+        } catch (\Exception $e) {
+            session()->flash('failed', $e->getMessage());
+        }
     }
 }
