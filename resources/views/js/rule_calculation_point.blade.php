@@ -181,7 +181,7 @@
             if (result.isConfirmed) {
                 alertProcess();
                 $.ajax({
-                    url: '{{ url('user-management') }}/' + id,
+                    url: '{{ url('rule-calculation-point') }}/' + id,
                     type: 'DELETE',
                     cache: false,
                     data: {

@@ -58,11 +58,19 @@
                         <div class="form-group">
                             <label for="month">Bulan <span class="text-danger">*</span></label>
                             <select class="form-control" id="month" name="month" onchange="monthConfiguration()">
+                                @foreach ($months as $value => $month)
+                                    <option value="{{ $value }}" @if(!is_null($rule_calculation_point->month) && $rule_calculation_point->month == $value) selected @endif>
+                                        {{ $month }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="month">Tanggal <span class="text-danger">*</span></label>
                             <select class="form-control" id="day" name="day">
+                                @foreach ($days as $value => $day)
+                                    <option value="{{ $value }}" @if(!is_null($rule_calculation_point->day) && $rule_calculation_point->day == $value) selected @endif>
+                                        {{ $day }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

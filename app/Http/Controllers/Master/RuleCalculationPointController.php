@@ -33,7 +33,7 @@ class RuleCalculationPointController extends Controller
      */
     public function dataTable()
     {
-        $list_of_users = RuleCalculationPoint::whereNull('deleted_at')->get(); // All Users
+        $list_of_users = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Rule Calculation Point
 
         // DataTables Yajraa Configuration
         $dataTable = DataTables::of($list_of_users)
@@ -86,39 +86,7 @@ class RuleCalculationPointController extends Controller
     public function dateConfiguration(Request $request)
     {
         try {
-            if (!is_null($request->year) && is_null($request->month)) {
-                $months = [];
-                for ($month = 1; $month <= 12; $month++) {
-                    $months[$month] = date('F', mktime(0, 0, 0, $month, 10));
-                }
-                return response()->json($months, 200);
-            } else {
-                if (is_null($request->year) && is_null($request->month)) {
-                    $months = [];
-                    for ($month = 1; $month <= 12; $month++) {
-                        $months[$month] = date('F', mktime(0, 0, 0, $month, 10));
-                    }
-                    return response()->json($months, 200);
-                } else {
-                    if (is_null($request->year) && !is_null($request->month)) {
-                        $days = [];
-                        for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $request->month, 2004)); $day++) {
-                            $days[$day] = $day;
-                        }
-                        return response()->json($days, 200);
-                    } else {
-                        if (!is_null($request->year) && !is_null($request->month)) {
-                            $days = [];
-                            for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year)); $day++) {
-                                $days[$day] = $day;
-                            }
-                            return response()->json($days, 200);
-                        } else {
-                            return response()->json(['message' => 'Invalid'], 400);
-                        }
-                    }
-                }
-            }
+            return response()->json($this->getDateConfiguration($request->year, $request->month), 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
@@ -237,7 +205,9 @@ class RuleCalculationPointController extends Controller
 
             // Check Request Validation
             if (!is_null($rule_calculation_point)) {
-                return view('master.rule_calculation_point.edit', compact('rule_calculation_point'));
+                $months = $this->getDateConfiguration(null, null);
+                $days = $this->getDateConfiguration($rule_calculation_point->year, $rule_calculation_point->month);
+                return view('master.rule_calculation_point.edit', compact('rule_calculation_point', 'months', 'days'));
             } else {
                 return redirect()
                     ->back()
@@ -367,6 +337,46 @@ class RuleCalculationPointController extends Controller
             }
         } catch (\Exception $e) {
             session()->flash('failed', $e->getMessage());
+        }
+    }
+
+    /**
+     * Date Configuration Universal Function
+     */
+    private function getDateConfiguration($year_request = null, $month_request = null)
+    {
+        if (!is_null($year_request) && is_null($month_request)) {
+            $months = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $months[$month] = date('F', mktime(0, 0, 0, $month, 10));
+            }
+            return $months;
+        } else {
+            if (is_null($year_request) && is_null($month_request)) {
+                $months = [];
+                for ($month = 1; $month <= 12; $month++) {
+                    $months[$month] = date('F', mktime(0, 0, 0, $month, 10));
+                }
+                return $months;
+            } else {
+                if (is_null($year_request) && !is_null($month_request)) {
+                    $days = [];
+                    for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $month_request, 2004)); $day++) {
+                        $days[$day] = $day;
+                    }
+                    return $days;
+                } else {
+                    if (!is_null($year_request) && !is_null($month_request)) {
+                        $days = [];
+                        for ($day = 1; $day <= ($d = cal_days_in_month(CAL_GREGORIAN, $month_request, $year_request)); $day++) {
+                            $days[$day] = $day;
+                        }
+                        return $days;
+                    } else {
+                        return [];
+                    }
+                }
+            }
         }
     }
 }
