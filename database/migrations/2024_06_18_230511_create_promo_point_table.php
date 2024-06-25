@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('menu_id');
             $table->string('name');
             $table->tinyInteger('status')->comment('0 as Inactive and 1 as Active');
-            $table->bigInteger('point');
+            $table->double('point');
             $table->date('start_on');
             $table->date('expired_on');
             $table->text('description')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
-            
+
             // Foreign Key
             $table->foreign('menu_id')->references('id')->on('menu');
             $table->foreign('created_by')->references('id')->on('users');
