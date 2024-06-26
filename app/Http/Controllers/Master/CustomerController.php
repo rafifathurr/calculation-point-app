@@ -33,7 +33,6 @@ class CustomerController extends Controller
      */
     public function dataTable()
     {
-
         $list_of_customer = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Customer
 
         // DataTables Yajraa Configuration
@@ -72,7 +71,7 @@ class CustomerController extends Controller
                 ->where('phone', $request->phone)
                 ->first();
 
-            // Va;idation Condition Field
+            // Validation Condition Field
             if (is_null($phone_number_validation)) {
                 DB::beginTransaction();
 
@@ -166,6 +165,68 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        try {
+            // Request Validation
+            $request->validate([
+                'name' => 'required',
+                'phone' => 'required',
+            ]);
+
+            // Validation Phone Number
+            $phone_number_validation = Customer::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->where('phone', $request->phone)
+                ->where('id', '!=', $id)
+                ->first();
+
+            // Validation Condition Field
+            if (is_null($phone_number_validation)) {
+                // Get Customer Record
+                $customer = Customer::find($id);
+
+                // Validation Customer
+                if (!is_null($customer)) {
+                    DB::beginTransaction();
+
+                    // Update Customer Record
+                    $customer_update = Customer::where('id', $id)->update([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'address' => $request->address,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+
+                    // Checking Update Data
+                    if ($customer_update) {
+                        DB::commit();
+                        return redirect()
+                            ->route('customer.index')
+                            ->with(['success' => 'Berhasil Ubah Customer']);
+                    } else {
+                        // Failed and Rollback
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Gagal Ubah Customer'])
+                            ->withInput();
+                    }
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Permintaan Gagal!']);
+                }
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Nomor Telepon Sudah Tersedia'])
+                    ->withInput();
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**

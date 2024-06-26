@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
             $table->string('name');
-            $table->char('phone', 13)->unique();
+            $table->char('phone', 13);
             $table->text('address')->nullable();
             $table->double('point')->default(0);
             $table->integer('created_by');
