@@ -44,6 +44,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Deskripsi</label>
+                        <div class="col-sm-9 col-form-label">
+                            {{ $rule_calculation_point->description ?? '-' }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Diperbarui Oleh</label>
                         <div class="col-sm-9 col-form-label">
                             {{ $rule_calculation_point->updatedBy->name }}

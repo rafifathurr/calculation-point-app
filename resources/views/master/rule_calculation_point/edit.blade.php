@@ -4,7 +4,7 @@
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
-                    <h4 class="az-dashboard-title" id="title">Tambah Rule Kalkulasi Point</h4>
+                    <h4 class="az-dashboard-title" id="title">Ubah Rule Kalkulasi Point</h4>
                 </div>
                 <form class="forms-sample" method="post"
                     action="{{ route('rule-calculation-point.update', ['id' => $rule_calculation_point->id]) }}">

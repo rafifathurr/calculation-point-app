@@ -4,7 +4,7 @@
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
-                    <h4 class="az-dashboard-title" id="title">Tambah User</h4>
+                    <h4 class="az-dashboard-title" id="title">Ubah User</h4>
                 </div>
                 <form class="forms-sample" method="post" action="{{ route('user-management.update', ['id' => $user->id]) }}">
                     @csrf

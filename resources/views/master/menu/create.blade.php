@@ -48,6 +48,6 @@
         </div>
     </div>
     @push('js-bottom')
-        @include('js.rule_calculation_point')
+        @include('js.menu')
     @endpush
 @endsection

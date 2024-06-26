@@ -168,7 +168,23 @@ class MenuController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            // Menu Detail by Requested Id
+            $menu = Menu::find($id);
+
+            // Check Request Validation
+            if (!is_null($menu)) {
+                return view('master.menu.detail', compact('menu'));
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Data Tidak Tersedia']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -176,7 +192,23 @@ class MenuController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        try {
+            // Menu Detail by Requested Id
+            $menu = Menu::find($id);
+
+            // Check Request Validation
+            if (!is_null($menu)) {
+                return view('master.menu.edit', compact('menu'));
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Data Tidak Tersedia']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()]);
+        }
     }
 
     /**
