@@ -8978,7 +8978,7 @@ a.text-dark:hover, a.text-dark:focus {
   @media (min-width: 992px) {
     .az-footer .container {
       padding: 10px 0 0; } }
-  
+
   .az-footer .container-fluid,
   .az-footer .container-sm,
   .az-footer .container-md,
@@ -10050,7 +10050,7 @@ body {
     .az-navbar > .container {
       padding: 0; } }
   @media (min-width: 992px) {
-    
+
     .az-navbar > .container-fluid,
     .az-navbar > .container-sm,
     .az-navbar > .container-md,
@@ -37466,3 +37466,7 @@ body {
 
 .wd-100v {
   width: 100vw; }
+
+.table thead th{
+    text-align: center !important;
+}

@@ -23,7 +23,7 @@
 
     function dataTable() {
         const url = $('#datatable-url').val();
-        $('#datatable-menu').DataTable({
+        $('#datatable-customer').DataTable({
             autoWidth: false,
             responsive: true,
             processing: true,
@@ -44,13 +44,15 @@
                     defaultContent: '-',
                 },
                 {
-                    data: 'attachment',
-                    width: '15%',
+                    data: 'phone',
                     defaultContent: '-',
                 },
                 {
-                    data: 'price',
-                    class: 'text-right',
+                    data: 'address',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'point',
                     defaultContent: '-',
                 },
                 {
@@ -83,7 +85,7 @@
             if (result.isConfirmed) {
                 alertProcess();
                 $.ajax({
-                    url: '{{ url('menu') }}/' + id,
+                    url: '{{ url('customer') }}/' + id,
                     type: 'DELETE',
                     cache: false,
                     data: {

@@ -43,7 +43,7 @@
                         <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-ticket"></i>
                             Promo</a>
                     <li class="nav-item">
-                        <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-user"></i>
+                        <a href="{{ route('customer.index') }}" class="nav-link"><i class="typcn typcn-user"></i>
                             Customer</a>
                     </li>
                 @endif

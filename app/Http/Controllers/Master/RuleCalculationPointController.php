@@ -33,10 +33,10 @@ class RuleCalculationPointController extends Controller
      */
     public function dataTable()
     {
-        $list_of_users = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Rule Calculation Point
+        $list_of_calculation_point = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Rule Calculation Point
 
         // DataTables Yajraa Configuration
-        $dataTable = DataTables::of($list_of_users)
+        $dataTable = DataTables::of($list_of_calculation_point)
             ->addIndexColumn()
             ->addColumn('availability', function ($data) {
                 // Condition Availability

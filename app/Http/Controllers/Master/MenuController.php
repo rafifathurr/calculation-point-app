@@ -34,11 +34,15 @@ class MenuController extends Controller
      */
     public function dataTable()
     {
-        $list_of_users = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Menu Point
+        $list_of_menu = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Menu
 
         // DataTables Yajraa Configuration
-        $dataTable = DataTables::of($list_of_users)
+        $dataTable = DataTables::of($list_of_menu)
             ->addIndexColumn()
+            ->addColumn('attachment', function ($data) {
+                // Set Up Image Attachment
+                return '<img width="100%" src="' . asset($data->attachment) . '" alt="" class="rounded-5 border border-1-default">';
+            })
             ->addColumn('price', function ($data) {
                 // Condition Availability
                 return 'Rp. ' . number_format($data->price, 0, ',', '.') . ',-';
@@ -51,8 +55,8 @@ class MenuController extends Controller
                 $btn_action .= '</div>';
                 return $btn_action;
             })
-            ->only(['name', 'price', 'action'])
-            ->rawColumns(['action'])
+            ->only(['name', 'attachment', 'price', 'action'])
+            ->rawColumns(['attachment', 'action'])
             ->make(true);
 
         return $dataTable;
@@ -357,10 +361,10 @@ class MenuController extends Controller
                 'deleted_at' => date('Y-m-d H:i:s'),
             ]);
 
-            // Validation Destroy Menu Point
+            // Validation Destroy Menu
             if ($menu_destroy) {
                 DB::commit();
-                session()->flash('success', 'Berhasil Hapus Menu Point');
+                session()->flash('success', 'Berhasil Hapus Menu');
             } else {
                 // Failed and Rollback
                 DB::rollBack();
