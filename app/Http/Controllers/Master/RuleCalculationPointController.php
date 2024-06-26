@@ -110,7 +110,7 @@ class RuleCalculationPointController extends Controller
                 DB::beginTransaction();
 
                 // Create Record
-                $rule_calculation_point = RuleCalculationPoint::create([
+                $rule_calculation_point = RuleCalculationPoint::lockforUpdate()->create([
                     'name' => $request->name,
                     'percentage' => $request->percentage,
                     'status' => $request->status,
@@ -238,7 +238,7 @@ class RuleCalculationPointController extends Controller
             // Get Rule Calculation Record
             $rule_calculation_point = RuleCalculationPoint::find($id);
 
-            // Validation User
+            // Validation Rule Calculation
             if (!is_null($rule_calculation_point)) {
                 if ($request->availability == 0) {
                     DB::beginTransaction();

@@ -34,7 +34,7 @@ class MenuController extends Controller
      */
     public function dataTable()
     {
-        $list_of_users = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Rule Calculation Point
+        $list_of_users = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Menu Point
 
         // DataTables Yajraa Configuration
         $dataTable = DataTables::of($list_of_users)
@@ -113,7 +113,6 @@ class MenuController extends Controller
 
                     // Check Upload Success
                     if (Storage::exists($path . '/' . $file_name)) {
-
                         // Update Record for Attachment
                         $menu_update = Menu::where('id', $menu->id)->update([
                             'attachment' => $path_store . '/' . $file_name,
@@ -216,7 +215,132 @@ class MenuController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            // Request Validation
+            $request->validate([
+                'name' => 'required',
+                'price' => 'required',
+                'attachment' => 'required',
+            ]);
+
+            // Validation Menu
+            $menu_name_validation = Menu::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('id', '!=', $id)
+                ->first();
+
+            // Va;idation Condition Field
+            if (is_null($menu_name_validation)) {
+                // Get Menu Record
+                $menu = Menu::find($id);
+
+                // Validation Menu
+                if (!is_null($menu)) {
+                    DB::beginTransaction();
+
+                    // Update Menu Record
+                    $menu_update = Menu::where('id', $id)->update([
+                        'name' => $request->name,
+                        'price' => $request->price,
+                        'description' => $request->description,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+
+                    // Checking Update Data
+                    if ($menu_update) {
+                        // Check Has Request File
+                        if (!empty($request->allFiles())) {
+                            // Image Path
+                            $path = 'public/uploads/menu';
+                            $path_store = 'storage/uploads/menu';
+
+                            // Check Exsisting Path
+                            if (!Storage::exists($path)) {
+                                // Create new Path Directory
+                                Storage::makeDirectory($path);
+                            }
+
+                            // File Last Record
+                            $attachment_exploded = explode('/', $menu->attachment);
+                            $file_name_record = $attachment_exploded[count($attachment_exploded) - 1];
+
+                            // Remove Last Record
+                            if (Storage::exists($path . '/' . $file_name_record)) {
+                                Storage::delete($path . '/' . $file_name_record);
+                            }
+
+                            // File Upload Configuration
+                            $exploded_name = explode(' ', strtolower($request->name));
+                            $name_menu_config = implode('_', $exploded_name);
+                            $file = $request->file('attachment');
+                            $file_name = $menu->id . '_' . $name_menu_config . '.' . $file->getClientOriginalExtension();
+
+                            /**
+                             * Upload File
+                             */
+                            $file->storePubliclyAs($path, $file_name);
+
+                            // Check Upload Success
+                            if (Storage::exists($path . '/' . $file_name)) {
+                                // Update Record for Attachment
+                                $menu_attachment_update = Menu::where('id', $id)->update([
+                                    'attachment' => $path_store . '/' . $file_name,
+                                ]);
+
+                                // Validation Update Attachment Menu Record
+                                if ($menu_attachment_update) {
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('menu.index')
+                                        ->with(['success' => 'Berhasil Ubah Menu']);
+                                } else {
+                                    // Failed and Rollback
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Gagal Update Foto Menu'])
+                                        ->withInput();
+                                }
+                            } else {
+                                // Failed and Rollback
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Gagal Upload Foto Menu'])
+                                    ->withInput();
+                            }
+                        } else {
+                            DB::commit();
+                            return redirect()
+                                ->route('menu.index')
+                                ->with(['success' => 'Berhasil Ubah Menu']);
+                        }
+                    } else {
+                        // Failed and Rollback
+                        DB::rollBack();
+                        return redirect()
+                            ->back()
+                            ->with(['failed' => 'Gagal Ubah Menu'])
+                            ->withInput();
+                    }
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Permintaan Gagal!']);
+                }
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Nama Menu Sudah Tersedia'])
+                    ->withInput();
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**

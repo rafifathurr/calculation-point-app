@@ -17,21 +17,36 @@
                 <li class="nav-item @if (Route::currentRouteName() == 'home') active show @endif">
                     <a href="{{ url('/') }}" class="nav-link"><i class="typcn typcn-home"></i> Home</a>
                 </li>
-                <li class="nav-item">
-                    <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-chart-bar"></i> Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Master</a>
-                    <nav class="az-menu-sub">
-                        <a href="{{ route('rule-calculation-point.index') }}" class="nav-link">Rule Point</a>
-                        <a href="{{ route('menu.index') }}" class="nav-link">Menu</a>
-                        <a href="page-signup.html" class="nav-link">Promo</a>
-                    </nav>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('user-management.index') }}" class="nav-link"><i class="typcn typcn-user"></i>
-                        User Management</a>
-                </li>
+                @if (Illuminate\Support\Facades\Auth::user()->hasRole('owner'))
+                    <li class="nav-item">
+                        <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-chart-bar"></i>
+                            Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Master</a>
+                        <nav class="az-menu-sub">
+                            <a href="{{ route('rule-calculation-point.index') }}" class="nav-link">Rule Point</a>
+                            <a href="{{ route('menu.index') }}" class="nav-link">Menu</a>
+                            <a href="page-signup.html" class="nav-link">Promo</a>
+                        </nav>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('user-management.index') }}" class="nav-link"><i class="typcn typcn-user"></i>
+                            User Management</a>
+                    </li>
+                @elseif(Illuminate\Support\Facades\Auth::user()->hasRole('cashier'))
+                    <li class="nav-item">
+                        <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-clipboard"></i>
+                            Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-ticket"></i>
+                            Promo</a>
+                    <li class="nav-item">
+                        <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-user"></i>
+                            Customer</a>
+                    </li>
+                @endif
             </ul>
         </div>
         <!-- az-header-menu -->
