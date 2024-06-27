@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\Master\CustomerController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\RuleCalculationPointController;
 use App\Http\Controllers\User\UserManagementController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +24,44 @@ Route::get('signin', [AuthController::class, 'signin'])->name('signin');
 Route::post('authentication', [AuthController::class, 'authentication'])->name('authentication');
 Route::get('signout', [AuthController::class, 'signout'])->name('signout');
 
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('home');
+    } else {
+        return redirect()->route('guest.home');
+    }
+});
+
 /**
- * Home Route
+ * Home Guest Route
+ */
+Route::group(['middleware' => 'guest'], function () {
+    /**
+     * Route Guest Module
+     */
+    Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
+        /**
+         * Home Route
+         */
+        Route::get('home', function () {
+            return view('guest.home');
+        })->name('home');
+
+        /**
+         * Route Guest Module
+         */
+        Route::group(['controller' => GuestController::class], function () {
+            Route::get('check', 'check')->name('check');
+            Route::get('get-data', 'getData')->name('getData');
+        });
+    });
+});
+
+/**
+ * Home Auth Route
  */
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', function () {
+    Route::get('home', function () {
         return view('home');
     })->name('home');
 });
@@ -35,7 +70,6 @@ Route::group(['middleware' => 'auth'], function () {
  * Owner Route Access
  */
 Route::group(['middleware' => ['role:owner']], function () {
-
     /**
      * Route Menu Module
      */
@@ -66,7 +100,6 @@ Route::group(['middleware' => ['role:owner']], function () {
  * Owner Route Access
  */
 Route::group(['middleware' => ['role:cashier']], function () {
-
     /**
      * Route Customer Module
      */
