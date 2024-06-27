@@ -4,7 +4,7 @@
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
-                    <h4 class="az-dashboard-title" id="title">Customer Check</h4>
+                    <h4 class="az-dashboard-title" id="title">Customer Check Point</h4>
                 </div>
                 <div class="card rounded-5">
                     <div class="card-header bg-white">
