@@ -34,7 +34,9 @@ class GuestController extends Controller
 
                 if (!is_null($customer)) {
                     //Get Grade based on Point
-                    $grade = PointGrade::where('range_min', '<=', $customer->point)
+                    $grade = PointGrade::whereNull('deleted_by')
+                        ->whereNull('deleted_at')
+                        ->where('range_min', '<=', $customer->point)
                         ->where('range_max', '>=', $customer->point)
                         ->first();
 
