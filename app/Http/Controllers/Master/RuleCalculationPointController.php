@@ -330,11 +330,11 @@ class RuleCalculationPointController extends Controller
             // Validation Destroy Rule Calculation Point
             if ($rule_calculation_point_destroy) {
                 DB::commit();
-                session()->flash('success', 'Berhasil Hapus Rule Calculation Point');
+                session()->flash('success', 'Berhasil Hapus Rule Kalkulasi Point');
             } else {
                 // Failed and Rollback
                 DB::rollBack();
-                session()->flash('failed', 'Gagal Hapus Rule Calculation');
+                session()->flash('failed', 'Gagal Hapus Rule Kalkulasi Point');
             }
         } catch (\Exception $e) {
             session()->flash('failed', $e->getMessage());

@@ -19,8 +19,14 @@
     </div>
     <div class="form-group row">
         <label class="col-sm-3 col-form-label">Total Point</label>
-        <div class="col-sm-9 col-form-label">
+        <div class="col-sm-9 col-form-label font-weight-bold">
             {{ $customer->point }}
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Grade Point</label>
+        <div class="col-sm-9 col-form-label font-weight-bold">
+            {{ $grade->name ?? '-' }}
         </div>
     </div>
 </div>

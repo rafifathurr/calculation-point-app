@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\Master\CustomerController;
 use App\Http\Controllers\Master\MenuController;
+use App\Http\Controllers\Master\PointGradeController;
 use App\Http\Controllers\Master\RuleCalculationPointController;
 use App\Http\Controllers\User\UserManagementController;
 use Illuminate\Support\Facades\Auth;
@@ -79,13 +80,21 @@ Route::group(['middleware' => ['role:owner']], function () {
     Route::resource('menu', MenuController::class)->parameters(['menu' => 'id']);
 
     /**
-     * Route Rule Calculation Point Management Module
+     * Route Rule Calculation Point Module
      */
     Route::group(['controller' => RuleCalculationPointController::class, 'prefix' => 'rule-calculation-point', 'as' => 'rule-calculation-point.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
         Route::get('date-configuration', 'dateConfiguration')->name('dateConfiguration');
     });
     Route::resource('rule-calculation-point', RuleCalculationPointController::class)->parameters(['rule-calculation-point' => 'id']);
+
+    /**
+     * Route Point Grade Module
+     */
+    Route::group(['controller' => PointGradeController::class, 'prefix' => 'point-grade', 'as' => 'point-grade.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('point-grade', PointGradeController::class)->parameters(['point-grade' => 'id']);
 
     /**
      * Route User Management Module

@@ -4,27 +4,27 @@
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
-                    <h4 class="az-dashboard-title" id="title">Ubah Customer</h4>
+                    <h4 class="az-dashboard-title" id="title">Tambah Point Grade</h4>
                 </div>
-                <form class="forms-sample" method="post" action="{{ route('customer.update', ['id' => $customer->id]) }}">
+                <form class="forms-sample" method="post" action="{{ route('point-grade.store') }}">
                     @csrf
-                    @method('patch')
                     <div class="form-group">
                         <label for="name">Nama <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Nama Customer"
-                            value="{{ $customer->name }}" required>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nama Grade"
+                            value="{{ old('name') }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Nomor Telepon <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="phone" name="phone" min="0"
-                            placeholder="Nomor Telepon" value="{{ $customer->phone }}" required>
+                        <label for="range_min">Minimal Point <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="range_min" name="range_min" min="0"
+                            placeholder="Minimal Point" value="{{ old('range_min') }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="address">Alamat</label>
-                        <textarea class="form-control" name="address" id="address" cols="10" rows="3" placeholder="Alamat">{{ $customer->address }}</textarea>
+                        <label for="range_max">Maksimal Point <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="range_max" name="range_max" min="0"
+                            placeholder="Maksimal Point" value="{{ old('range_max') }}" required>
                     </div>
                     <div class="float-right mt-3">
-                        <a href="{{ route('customer.index') }}" class="btn btn-sm rounded-5 btn-danger">
+                        <a href="{{ route('point-grade.index') }}" class="btn btn-sm rounded-5 btn-danger">
                             <i class="fas fa-arrow-left"></i>
                             Kembali
                         </a>
@@ -40,6 +40,6 @@
         </div>
     </div>
     @push('js-bottom')
-        @include('js.customer')
+        @include('js.point_grade')
     @endpush
 @endsection

@@ -14,7 +14,7 @@
             </div>
             <!-- az-header-menu-header -->
             <ul class="nav">
-                <li class="nav-item @if (Route::currentRouteName() == 'home') active show @endif">
+                <li class="nav-item @if (Route::currentRouteName() == 'home' || Route::currentRouteName() == 'guest.home') active show @endif">
                     <a href="{{ url('/') }}" class="nav-link"><i class="typcn typcn-home"></i> Home</a>
                 </li>
                 @if (Illuminate\Support\Facades\Auth::check())
@@ -23,9 +23,12 @@
                             <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-chart-bar"></i>
                                 Dashboard</a>
                         </li>
-                        <li class="nav-item @if (Route::currentRouteName() == 'rule-calculation-point.index' || Route::currentRouteName() == 'menu.index') active show @endif">
+                        <li class="nav-item @if (Route::currentRouteName() == 'rule-calculation-point.index' ||
+                                Route::currentRouteName() == 'menu.index' ||
+                                Route::currentRouteName() == 'point-grade.index') active show @endif">
                             <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Master</a>
                             <nav class="az-menu-sub">
+                                <a href="{{ route('point-grade.index') }}" class="nav-link">Point Grade</a>
                                 <a href="{{ route('rule-calculation-point.index') }}" class="nav-link">Rule Point</a>
                                 <a href="{{ route('menu.index') }}" class="nav-link">Menu</a>
                                 <a href="page-signup.html" class="nav-link">Promo</a>
