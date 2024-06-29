@@ -5,6 +5,7 @@ use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\Master\CustomerController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\PointGradeController;
+use App\Http\Controllers\Master\PromoPointController;
 use App\Http\Controllers\Master\RuleCalculationPointController;
 use App\Http\Controllers\User\UserManagementController;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,14 @@ Route::group(['middleware' => 'auth'], function () {
  * Owner Route Access
  */
 Route::group(['middleware' => ['role:owner']], function () {
+    /**
+     * Route Menu Module
+     */
+    Route::group(['controller' => PromoPointController::class, 'prefix' => 'promo-point', 'as' => 'promo-point.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('promo-point', PromoPointController::class)->parameters(['promo-point' => 'id']);
+
     /**
      * Route Menu Module
      */

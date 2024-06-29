@@ -25,13 +25,14 @@
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'rule-calculation-point.index' ||
                                 Route::currentRouteName() == 'menu.index' ||
-                                Route::currentRouteName() == 'point-grade.index') active show @endif">
+                                Route::currentRouteName() == 'point-grade.index' ||
+                                Route::currentRouteName() == 'promo-point.index') active show @endif">
                             <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Master</a>
                             <nav class="az-menu-sub">
                                 <a href="{{ route('point-grade.index') }}" class="nav-link">Point Grade</a>
                                 <a href="{{ route('rule-calculation-point.index') }}" class="nav-link">Rule Point</a>
                                 <a href="{{ route('menu.index') }}" class="nav-link">Menu</a>
-                                <a href="page-signup.html" class="nav-link">Promo</a>
+                                <a href="{{ route('promo-point.index') }}" class="nav-link">Promo</a>
                             </nav>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'user-management.index') active show @endif">

@@ -18,8 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->tinyInteger('status')->comment('0 as Inactive and 1 as Active');
             $table->double('point');
+            $table->integer('qty');
             $table->date('start_on');
             $table->date('expired_on');
+            $table->text('attachment')->nullable();
             $table->text('description')->nullable();
             $table->integer('created_by');
             $table->timestamp('created_at')->useCurrent();
