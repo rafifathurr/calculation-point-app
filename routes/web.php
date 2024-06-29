@@ -71,14 +71,24 @@ Route::group(['middleware' => 'auth'], function () {
 /**
  * Owner Route Access
  */
-Route::group(['middleware' => ['role:owner']], function () {
+Route::group(['middleware' => ['role:owner|cashier']], function () {
     /**
-     * Route Menu Module
+     * Route Promo Point Module
      */
     Route::group(['controller' => PromoPointController::class, 'prefix' => 'promo-point', 'as' => 'promo-point.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('promo-point', PromoPointController::class)->parameters(['promo-point' => 'id']);
+    Route::resource('promo-point', PromoPointController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['promo-point' => 'id']);
+});
+
+/**
+ * Owner Route Access
+ */
+Route::group(['middleware' => ['role:owner']], function () {
+    /**
+     * Route Promo Point Module
+     */
+    Route::resource('promo-point', PromoPointController::class, ['except' => ['index', 'show']])->parameters(['promo-point' => 'id']);
 
     /**
      * Route Menu Module

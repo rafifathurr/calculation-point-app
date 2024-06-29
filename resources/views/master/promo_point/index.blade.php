@@ -5,10 +5,12 @@
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
                     <h4 class="az-dashboard-title" id="title">Promo Point</h4>
-                    <a href="{{ route('promo-point.create') }}" class="btn btn-sm rounded-5 btn-primary">
-                        <i class="fas fa-plus mr-1"></i>
-                        Tambah Promo Point
-                    </a>
+                    @if (Illuminate\Support\Facades\Auth::user()->hasRole('owner'))
+                        <a href="{{ route('promo-point.create') }}" class="btn btn-sm rounded-5 btn-primary">
+                            <i class="fas fa-plus mr-1"></i>
+                            Tambah Promo Point
+                        </a>
+                    @endif
                 </div>
                 <div class="table-responsive">
                     <input type="hidden" id="datatable-url" value="{{ $dt_route }}">
