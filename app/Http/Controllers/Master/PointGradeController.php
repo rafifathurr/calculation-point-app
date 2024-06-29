@@ -134,7 +134,8 @@ class PointGradeController extends Controller
 
             // Check Request Validation
             if (!is_null($point_grade)) {
-                return view('master.point_grade.detail', compact('point_grade'));
+                $data['point_grade'] = $point_grade;
+                return view('master.point_grade.detail', $data);
             } else {
                 return redirect()
                     ->back()
@@ -158,7 +159,8 @@ class PointGradeController extends Controller
 
             // Check Request Validation
             if (!is_null($point_grade)) {
-                return view('master.point_grade.edit', compact('point_grade'));
+                $data['point_grade'] = $point_grade;
+                return view('master.point_grade.edit', $data);
             } else {
                 return redirect()
                     ->back()

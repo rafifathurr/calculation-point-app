@@ -182,7 +182,8 @@ class RuleCalculationPointController extends Controller
 
             // Check Request Validation
             if (!is_null($rule_calculation_point)) {
-                return view('master.rule_calculation_point.detail', compact('rule_calculation_point'));
+                $data['rule_calculation_point'] = $rule_calculation_point;
+                return view('master.rule_calculation_point.detail', $data);
             } else {
                 return redirect()
                     ->back()
@@ -206,9 +207,10 @@ class RuleCalculationPointController extends Controller
 
             // Check Request Validation
             if (!is_null($rule_calculation_point)) {
-                $months = $this->getDateConfiguration(null, null);
-                $days = $this->getDateConfiguration($rule_calculation_point->year, $rule_calculation_point->month);
-                return view('master.rule_calculation_point.edit', compact('rule_calculation_point', 'months', 'days'));
+                $data['rule_calculation_point'] = $rule_calculation_point;
+                $data['months'] = $this->getDateConfiguration(null, null);
+                $data['days'] = $this->getDateConfiguration($rule_calculation_point->year, $rule_calculation_point->month);
+                return view('master.rule_calculation_point.edit', $data);
             } else {
                 return redirect()
                     ->back()

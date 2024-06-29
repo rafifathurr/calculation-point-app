@@ -127,12 +127,12 @@ class PromoPointController extends Controller
                 // Check Upload Success
                 if (Storage::exists($path . '/' . $file_name)) {
                     // Update Record for Attachment
-                    $menu_update = PromoPoint::where('id', $promo_point->id)->update([
+                    $promo_point_update = PromoPoint::where('id', $promo_point->id)->update([
                         'attachment' => $path_store . '/' . $file_name,
                     ]);
 
-                    // Validation Update Attachment Menu Record
-                    if ($menu_update) {
+                    // Validation Update Attachment Promo Point Record
+                    if ($promo_point_update) {
                         DB::commit();
                         return redirect()
                             ->route('promo-point.index')
@@ -180,7 +180,8 @@ class PromoPointController extends Controller
 
             // Check Request Validation
             if (!is_null($promo_point)) {
-                return view('master.promo_point.detail', compact('promo_point'));
+                $data['promo_point'] = $promo_point;
+                return view('master.promo_point.detail', $data);
             } else {
                 return redirect()
                     ->back()
@@ -204,8 +205,9 @@ class PromoPointController extends Controller
 
             // Check Request Validation
             if (!is_null($promo_point)) {
-                $menus = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get();
-                return view('master.promo_point.edit', compact('promo_point', 'menus'));
+                $data['promo_point'] = $promo_point;
+                $data['menus'] = Menu::whereNull('deleted_by')->whereNull('deleted_at')->get();
+                return view('master.promo_point.edit', $data);
             } else {
                 return redirect()
                     ->back()
@@ -223,7 +225,128 @@ class PromoPointController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            // Request Validation
+            $request->validate([
+                'name' => 'required',
+                'menu' => 'required',
+                'status' => 'required',
+                'point' => 'required',
+                'qty' => 'required',
+                'start_on' => 'required',
+                'expired_on' => 'required',
+                'attachment' => 'required',
+            ]);
+
+            // Get Promo Point Record
+            $promo_point = PromoPoint::find($id);
+
+            // Validation Promo Point
+            if (!is_null($promo_point)) {
+                DB::beginTransaction();
+
+                // Update Record
+                $promo_point_update = PromoPoint::where('id', $id)->update([
+                    'name' => $request->name,
+                    'menu_id' => $request->menu,
+                    'status' => $request->status,
+                    'point' => $request->point,
+                    'qty' => $request->qty,
+                    'start_on' => $request->start_on,
+                    'expired_on' => $request->expired_on,
+                    'description' => $request->description,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
+
+                // Checking Update Data
+                if ($promo_point_update) {
+                    // Check Has Request File
+                    if (!empty($request->allFiles())) {
+                        // Image Path
+                        $path = 'public/uploads/promo';
+                        $path_store = 'storage/uploads/promo';
+
+                        // Check Exsisting Path
+                        if (!Storage::exists($path)) {
+                            // Create new Path Directory
+                            Storage::makeDirectory($path);
+                        }
+
+                        // File Last Record
+                        $attachment_exploded = explode('/', $promo_point->attachment);
+                        $file_name_record = $attachment_exploded[count($attachment_exploded) - 1];
+
+                        // Remove Last Record
+                        if (Storage::exists($path . '/' . $file_name_record)) {
+                            Storage::delete($path . '/' . $file_name_record);
+                        }
+
+                        // File Upload Configuration
+                        $exploded_name = explode(' ', strtolower($request->name));
+                        $name_menu_config = implode('_', $exploded_name);
+                        $file = $request->file('attachment');
+                        $file_name = $promo_point->id . '_' . $name_menu_config . '.' . $file->getClientOriginalExtension();
+
+                        /**
+                         * Upload File
+                         */
+                        $file->storePubliclyAs($path, $file_name);
+
+                        // Check Upload Success
+                        if (Storage::exists($path . '/' . $file_name)) {
+                            // Update Record for Attachment
+                            $promo_point_attachment_update = PromoPoint::where('id', $id)->update([
+                                'attachment' => $path_store . '/' . $file_name,
+                            ]);
+
+                            // Validation Update Attachment Promo Point Record
+                            if ($promo_point_attachment_update) {
+                                DB::commit();
+                                return redirect()
+                                    ->route('promo-point.index')
+                                    ->with(['success' => 'Berhasil Ubah Promo Point']);
+                            } else {
+                                // Failed and Rollback
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Gagal Update Foto Promo Point'])
+                                    ->withInput();
+                            }
+                        } else {
+                            // Failed and Rollback
+                            DB::rollBack();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Gagal Upload Foto Promo Point'])
+                                ->withInput();
+                        }
+                    } else {
+                        DB::commit();
+                        return redirect()
+                            ->route('promo-point.index')
+                            ->with(['success' => 'Berhasil Ubah Promo Point']);
+                    }
+                } else {
+                    // Failed and Rollback
+                    DB::rollBack();
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Gagal Tambah Promo Point'])
+                        ->withInput();
+                }
+            } else {
+                return redirect()
+                    ->back()
+                    ->with(['failed' => 'Permintaan Gagal!']);
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with(['failed' => $e->getMessage()])
+                ->withInput();
+        }
     }
 
     /**

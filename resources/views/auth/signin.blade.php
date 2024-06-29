@@ -32,6 +32,13 @@
                             </span>
                         </div>
                     </div><!-- form-group -->
+                    <div class="form-check form-check-flat form-check-primary mt-4">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="remember">
+                            Remember me
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block rounded-5 fw-bold">Sign In</button>
                 </form>
             </div><!-- az-signin-header -->

@@ -177,7 +177,8 @@ class MenuController extends Controller
 
             // Check Request Validation
             if (!is_null($menu)) {
-                return view('master.menu.detail', compact('menu'));
+                $data['menu'] = $menu;
+                return view('master.menu.detail', $data);
             } else {
                 return redirect()
                     ->back()
@@ -201,7 +202,8 @@ class MenuController extends Controller
 
             // Check Request Validation
             if (!is_null($menu)) {
-                return view('master.menu.edit', compact('menu'));
+                $data['menu'] = $menu;
+                return view('master.menu.edit', $data);;
             } else {
                 return redirect()
                     ->back()

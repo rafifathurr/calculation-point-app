@@ -146,7 +146,6 @@ class UserManagementController extends Controller
                 $exploded_raw_role = explode('-', $user->getRoleNames()[0]);
                 $data['user'] = $user;
                 $data['user_role'] = ucwords(implode(' ', $exploded_raw_role));
-
                 return view('user_management.detail', $data);
             } else {
                 return redirect()
@@ -173,7 +172,6 @@ class UserManagementController extends Controller
                 $data['user'] = $user; // User Record
                 $data['roles'] = Role::all(); // List of Roles
                 $data['role_disabled'] = $id == Auth::user()->id ? 'disabled' : ''; // Disabled Changing Role User It Self
-
                 return view('user_management.edit', $data);
             } else {
                 return redirect()

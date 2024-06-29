@@ -123,7 +123,8 @@ class CustomerController extends Controller
 
             // Check Request Validation
             if (!is_null($customer)) {
-                return view('master.customer.detail', compact('customer'));
+                $data['customer'] = $customer;
+                return view('master.customer.detail', $data);
             } else {
                 return redirect()
                     ->back()
@@ -147,7 +148,8 @@ class CustomerController extends Controller
 
             // Check Request Validation
             if (!is_null($customer)) {
-                return view('master.customer.edit', compact('customer'));
+                $data['customer'] = $customer;
+                return view('master.customer.edit', $data);
             } else {
                 return redirect()
                     ->back()
