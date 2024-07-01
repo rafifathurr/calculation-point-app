@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\Master\CustomerController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\PointGradeController;
 use App\Http\Controllers\Master\PromoPointController;
 use App\Http\Controllers\Master\RuleCalculationPointController;
+use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\User\UserManagementController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -43,16 +45,10 @@ Route::group(['middleware' => 'guest'], function () {
      */
     Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
         /**
-         * Home Route
-         */
-        Route::get('home', function () {
-            return view('guest.home');
-        })->name('home');
-
-        /**
          * Route Guest Module
          */
         Route::group(['controller' => GuestController::class], function () {
+            Route::get('home', 'home')->name('home');
             Route::get('check', 'check')->name('check');
             Route::get('get-data', 'getData')->name('getData');
         });
@@ -71,20 +67,16 @@ Route::group(['middleware' => 'auth'], function () {
 /**
  * Owner Route Access
  */
-Route::group(['middleware' => ['role:owner|cashier']], function () {
-    /**
-     * Route Promo Point Module
-     */
-    Route::group(['controller' => PromoPointController::class, 'prefix' => 'promo-point', 'as' => 'promo-point.'], function () {
-        Route::get('datatable', 'dataTable')->name('dataTable');
-    });
-    Route::resource('promo-point', PromoPointController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['promo-point' => 'id']);
-});
-
-/**
- * Owner Route Access
- */
 Route::group(['middleware' => ['role:owner']], function () {
+    /**
+     * Route Dashboard Module
+     */
+    Route::group(['controller' => DashboardController::class, 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('check', 'check')->name('check');
+        Route::get('get-data', 'getData')->name('getData');
+    });
+
     /**
      * Route Promo Point Module
      */
@@ -96,7 +88,7 @@ Route::group(['middleware' => ['role:owner']], function () {
     Route::group(['controller' => MenuController::class, 'prefix' => 'menu', 'as' => 'menu.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('menu', MenuController::class)->parameters(['menu' => 'id']);
+    Route::resource('menu', MenuController::class, ['except' => ['show']])->parameters(['menu' => 'id']);
 
     /**
      * Route Rule Calculation Point Module
@@ -129,10 +121,45 @@ Route::group(['middleware' => ['role:owner']], function () {
  */
 Route::group(['middleware' => ['role:cashier']], function () {
     /**
+     * Route Order Module
+     */
+    Route::group(['controller' => OrderController::class, 'prefix' => 'order', 'as' => 'order.'], function () {
+        Route::get('create/{type}', 'create')->name('create');
+        Route::get('catalogue-menu', 'catalogueMenu')->name('catalogueMenu');
+    });
+    Route::resource('order', OrderController::class, ['except' => ['create', 'index', 'show']])->parameters(['order' => 'id']);
+
+    /**
      * Route Customer Module
      */
     Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('customer', CustomerController::class)->parameters(['customer' => 'id']);
+});
+
+/**
+ * Owner and Cashier Route Access
+ */
+Route::group(['middleware' => ['role:owner|cashier']], function () {
+    /**
+     * Route Order Module
+     */
+    Route::group(['controller' => OrderController::class, 'prefix' => 'order', 'as' => 'order.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('order', OrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['order' => 'id']);
+
+    /**
+     * Route Menu Module
+     */
+    Route::resource('menu', MenuController::class, ['except' => ['index', 'create', 'store', 'edit', 'update', 'destroy']])->parameters(['menu' => 'id']);
+
+    /**
+     * Route Promo Point Module
+     */
+    Route::group(['controller' => PromoPointController::class, 'prefix' => 'promo-point', 'as' => 'promo-point.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('promo-point', PromoPointController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['promo-point' => 'id']);
 });

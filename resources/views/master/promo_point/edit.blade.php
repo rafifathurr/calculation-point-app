@@ -61,9 +61,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="attachment">Foto <span class="text-danger">*</span></label>
+                        <label for="attachment">Foto</label>
                         <input type="file" class="form-control" id="attachment" name="attachment"
-                            accept="image/jpeg,image/jpg,image/png" required>
+                            accept="image/jpeg,image/jpg,image/png">
                         <label class="mt-2"><a target="_blank" href="{{ asset($promo_point->attachment) }}"><i
                                     class="typcn typcn-download"></i>
                                 Lampiran Foto</a></label>

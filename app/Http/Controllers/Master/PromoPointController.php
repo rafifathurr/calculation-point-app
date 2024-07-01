@@ -178,20 +178,30 @@ class PromoPointController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         try {
             // Promo Point Detail by Requested Id
-            $promo_point = PromoPoint::find($id);
+            $promo_point = PromoPoint::with(['menu'])->find($id);
 
-            // Check Request Validation
-            if (!is_null($promo_point)) {
-                $data['promo_point'] = $promo_point;
-                return view('master.promo_point.detail', $data);
+            // Check Type Request
+            if (!$request->ajax()) {
+                // Check Request Validation
+                if (!is_null($promo_point)) {
+                    $data['promo_point'] = $promo_point;
+                    return view('master.promo_point.detail', $data);
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Data Tidak Tersedia']);
+                }
             } else {
-                return redirect()
-                    ->back()
-                    ->with(['failed' => 'Data Tidak Tersedia']);
+                // Check Request Validation
+                if (!is_null($promo_point)) {
+                    return response()->json(['promo_point' => $promo_point], 200);
+                } else {
+                    return response()->json(['message' => 'Data Tidak Tersedia'], 400);
+                }
             }
         } catch (\Exception $e) {
             return redirect()
@@ -241,7 +251,6 @@ class PromoPointController extends Controller
                 'qty' => 'required',
                 'start_on' => 'required',
                 'expired_on' => 'required',
-                'attachment' => 'required',
             ]);
 
             // Get Promo Point Record

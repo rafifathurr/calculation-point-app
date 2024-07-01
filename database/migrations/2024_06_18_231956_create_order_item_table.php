@@ -15,7 +15,8 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
             $table->integer('order_id');
-            $table->integer('menu_id');
+            $table->integer('menu_id')->nullable();
+            $table->integer('promo_point_id')->nullable();
             $table->bigInteger('qty');
             $table->bigInteger('price')->nullable();
             $table->double('point')->nullable();
@@ -29,6 +30,7 @@ return new class extends Migration
             // Foreign Key
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('menu_id')->references('id')->on('menu');
+            $table->foreign('promo_point_id')->references('id')->on('promo_point');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->foreign('deleted_by')->references('id')->on('users');

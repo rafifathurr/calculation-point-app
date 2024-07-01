@@ -169,20 +169,30 @@ class MenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         try {
             // Menu Detail by Requested Id
             $menu = Menu::find($id);
 
-            // Check Request Validation
-            if (!is_null($menu)) {
-                $data['menu'] = $menu;
-                return view('master.menu.detail', $data);
+            // Check Type Request
+            if (!$request->ajax()) {
+                // Check Request Validation
+                if (!is_null($menu)) {
+                    $data['menu'] = $menu;
+                    return view('master.menu.detail', $data);
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Data Tidak Tersedia']);
+                }
             } else {
-                return redirect()
-                    ->back()
-                    ->with(['failed' => 'Data Tidak Tersedia']);
+                // Check Request Validation
+                if (!is_null($menu)) {
+                    return response()->json(['menu' => $menu], 200);
+                } else {
+                    return response()->json(['message' => 'Data Tidak Tersedia'], 400);
+                }
             }
         } catch (\Exception $e) {
             return redirect()
@@ -203,7 +213,7 @@ class MenuController extends Controller
             // Check Request Validation
             if (!is_null($menu)) {
                 $data['menu'] = $menu;
-                return view('master.menu.edit', $data);;
+                return view('master.menu.edit', $data);
             } else {
                 return redirect()
                     ->back()
@@ -226,7 +236,6 @@ class MenuController extends Controller
             $request->validate([
                 'name' => 'required',
                 'price' => 'required',
-                'attachment' => 'required',
             ]);
 
             // Validation Menu

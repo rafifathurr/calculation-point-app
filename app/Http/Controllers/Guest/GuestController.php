@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guest;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Customer;
 use App\Models\Master\PointGrade;
+use App\Models\Master\PromoPoint;
 use Illuminate\Http\Request;
 
 class GuestController extends Controller
@@ -12,16 +13,30 @@ class GuestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function home()
     {
-        return view('guest.home');
+        // Get List of Current Active Promotion
+        $data['promo_point'] = PromoPoint::with(['menu'])
+            ->whereNull('deleted_by')
+            ->whereNull('deleted_at')
+            ->where('status', 1)
+            ->whereDate('start_on', '<=', date('Y-m-d'))
+            ->whereDate('expired_on', '>=', date('Y-m-d'))
+            ->get();
+        return view('guest.home', $data);
     }
 
+    /**
+     * Display Check of Guest Page
+     */
     public function check()
     {
         return view('guest.check');
     }
 
+    /**
+     * Show Data Resource of Customer
+     */
     public function getData(Request $request)
     {
         try {

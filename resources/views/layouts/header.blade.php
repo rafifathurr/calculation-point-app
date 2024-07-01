@@ -19,9 +19,13 @@
                 </li>
                 @if (Illuminate\Support\Facades\Auth::check())
                     @if (Illuminate\Support\Facades\Auth::user()->hasRole('owner'))
-                        <li class="nav-item">
-                            <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-chart-bar"></i>
+                        <li class="nav-item @if (Route::currentRouteName() == 'dashboard.index') active show @endif">
+                            <a href="{{ route('dashboard.index') }}" class="nav-link"><i class="typcn typcn-chart-bar"></i>
                                 Dashboard</a>
+                        </li>
+                        <li class="nav-item @if (Route::currentRouteName() == 'order.index') active show @endif">
+                            <a href="{{ route('order.index') }}" class="nav-link"><i class="typcn typcn-clipboard"></i>
+                                Order</a>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'rule-calculation-point.index' ||
                                 Route::currentRouteName() == 'menu.index' ||
@@ -41,12 +45,13 @@
                                 User Management</a>
                         </li>
                     @elseif(Illuminate\Support\Facades\Auth::user()->hasRole('cashier'))
-                        <li class="nav-item">
-                            <a href="chart-chartjs.html" class="nav-link"><i class="typcn typcn-clipboard"></i>
+                        <li class="nav-item @if (Route::currentRouteName() == 'order.index') active show @endif">
+                            <a href="{{ route('order.index') }}" class="nav-link"><i class="typcn typcn-clipboard"></i>
                                 Order</a>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'promo-point.index') active show @endif">
-                            <a href="{{ route('promo-point.index') }}" class="nav-link"><i class="typcn typcn-ticket"></i>
+                            <a href="{{ route('promo-point.index') }}" class="nav-link"><i
+                                    class="typcn typcn-ticket"></i>
                                 Promo</a>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'customer.index') active show @endif">

@@ -115,20 +115,30 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         try {
             // Customer Detail by Requested Id
             $customer = Customer::find($id);
 
-            // Check Request Validation
-            if (!is_null($customer)) {
-                $data['customer'] = $customer;
-                return view('master.customer.detail', $data);
+            // Check Type Request
+            if (!$request->ajax()) {
+                // Check Request Validation
+                if (!is_null($customer)) {
+                    $data['customer'] = $customer;
+                    return view('master.customer.detail', $data);
+                } else {
+                    return redirect()
+                        ->back()
+                        ->with(['failed' => 'Data Tidak Tersedia']);
+                }
             } else {
-                return redirect()
-                    ->back()
-                    ->with(['failed' => 'Data Tidak Tersedia']);
+                // Check Request Validation
+                if (!is_null($customer)) {
+                    return response()->json(['customer' => $customer], 200);
+                } else {
+                    return response()->json(['message' => 'Data Tidak Tersedia'], 400);
+                }
             }
         } catch (\Exception $e) {
             return redirect()

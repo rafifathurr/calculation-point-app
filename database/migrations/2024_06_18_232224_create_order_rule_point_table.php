@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('id')->autoIncrement();
             $table->integer('order_id');
             $table->integer('rule_calculation_point_id');
+            $table->double('percentage');
             $table->double('point');
             $table->integer('created_by');
             $table->timestamp('created_at')->useCurrent();
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('deleted_at')->nullable();
-            
+
             // Foreign Key
             $table->foreign('order_id')->references('id')->on('order');
             $table->foreign('rule_calculation_point_id')->references('id')->on('rule_calculation_point');
