@@ -6,6 +6,7 @@
 <script src="{{ asset('lib/chart.js/Chart.bundle.min.js') }}"></script>
 <script src="{{ asset('lib/peity/jquery.peity.min.js') }}"></script>
 <script src="{{ asset('lib/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('lib/select2/js/select2.min.js') }}"></script>
 
 <script src="{{ asset('js/azia.js') }}"></script>
 <script src="{{ asset('js/chart.flot.sampledata.js') }}"></script>

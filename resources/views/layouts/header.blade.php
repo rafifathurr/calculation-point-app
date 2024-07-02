@@ -20,7 +20,8 @@
                 @if (Illuminate\Support\Facades\Auth::check())
                     @if (Illuminate\Support\Facades\Auth::user()->hasRole('owner'))
                         <li class="nav-item @if (Route::currentRouteName() == 'dashboard.index') active show @endif">
-                            <a href="{{ route('dashboard.index') }}" class="nav-link"><i class="typcn typcn-chart-bar"></i>
+                            <a href="{{ route('dashboard.index') }}" class="nav-link"><i
+                                    class="typcn typcn-chart-bar"></i>
                                 Dashboard</a>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'order.index') active show @endif">
@@ -63,6 +64,10 @@
                     <li class="nav-item @if (Route::currentRouteName() == 'guest.check') active show @endif">
                         <a href="{{ route('guest.check') }}" class="nav-link"><i class="typcn typcn-clipboard"></i>
                             Check Point</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('signin') }}" class="nav-link"><i class="typcn typcn-user"></i>
+                            Sign In</a>
                     </li>
                 @endif
             </ul>
