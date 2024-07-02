@@ -43,7 +43,7 @@ class OrderController extends Controller
                 $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->sum('percentage');
                 $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->sum('percentage');
                 $data['total_percentage'] = $total_percentage / 100;
-            }else{
+            } else {
                 $data['title'] = 'Penukaran Point';
             }
 
@@ -222,23 +222,59 @@ class OrderController extends Controller
                         // Merge to single array
                         $result_rule = array_merge($rule_all, $rule_date_without_year, $rule_date_with_year);
 
-                        foreach ($result_rule as $rule_calculation_point) {
-                            $point_per_rule = $request->total_price * ($rule_calculation_point['percentage'] / 100);
-                            $order_rule_point_request[] = [
-                                'order_id' => $order->id,
-                                'rule_calculation_point_id' => $rule_calculation_point['id'],
-                                'percentage' => $rule_calculation_point['percentage'],
-                                'point' => $point_per_rule,
-                                'created_by' => Auth::user()->id,
-                                'updated_by' => Auth::user()->id,
-                            ];
-                        }
+                        if (!empty($result_rule)) {
+                            foreach ($result_rule as $rule_calculation_point) {
+                                $point_per_rule = $request->total_price * ($rule_calculation_point['percentage'] / 100);
+                                $order_rule_point_request[] = [
+                                    'order_id' => $order->id,
+                                    'rule_calculation_point_id' => $rule_calculation_point['id'],
+                                    'percentage' => $rule_calculation_point['percentage'],
+                                    'point' => $point_per_rule,
+                                    'created_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                ];
+                            }
 
-                        // Insert Order Rule Point
-                        $order_rule_point = OrderRulePoint::lockForUpdate()->insert($order_rule_point_request);
+                            // Insert Order Rule Point
+                            $order_rule_point = OrderRulePoint::lockForUpdate()->insert($order_rule_point_request);
 
-                        // Validation Store Order Rule Point
-                        if ($order_rule_point) {
+                            // Validation Store Order Rule Point
+                            if ($order_rule_point) {
+                                // Get Last Record Customer
+                                $customer_record = Customer::find($order->customer_id);
+
+                                // Calculation Point
+                                $add_point = $customer_record->point + $order->total_point;
+
+                                // Update Customer Point
+                                $customer_update = Customer::where('id', $order->customer_id)->update([
+                                    'point' => $add_point,
+                                    'updated_by' => Auth::user()->id,
+                                ]);
+
+                                // Validation Update Customer Point
+                                if ($customer_update) {
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('order.index')
+                                        ->with(['success' => 'Berhasil Menambahkan Order']);
+                                } else {
+                                    // Failed and Rollback
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Gagal Tambah Point Customer'])
+                                        ->withInput();
+                                }
+                            } else {
+                                // Failed and Rollback
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Gagal Tambah Rule Item Point'])
+                                    ->withInput();
+                            }
+                        } else {
                             // Get Last Record Customer
                             $customer_record = Customer::find($order->customer_id);
 
@@ -265,13 +301,6 @@ class OrderController extends Controller
                                     ->with(['failed' => 'Gagal Tambah Point Customer'])
                                     ->withInput();
                             }
-                        } else {
-                            // Failed and Rollback
-                            DB::rollBack();
-                            return redirect()
-                                ->back()
-                                ->with(['failed' => 'Gagal Tambah Rule Item Point'])
-                                ->withInput();
                         }
                     } else {
                         // Failed and Rollback
@@ -418,7 +447,7 @@ class OrderController extends Controller
                 if ($order->type == 0) {
                     $data['title'] = 'Ubah Order';
                     $data['total_percentage'] = OrderRulePoint::where('order_id', $id)->sum('percentage') / 100;
-                }else{
+                } else {
                     $data['title'] = 'Ubah Penukaran Point';
                 }
 
@@ -501,26 +530,28 @@ class OrderController extends Controller
                             // Get All Rule from Last Record
                             $result_rule = OrderRulePoint::where('order_id', $id)->get()->toArray();
 
-                            foreach ($result_rule as $order_rule_point) {
-                                // Calculation New Point
-                                $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
+                            if(!empty($result_rule)) {
+                                foreach ($result_rule as $order_rule_point) {
+                                    // Calculation New Point
+                                    $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
 
-                                // Insert Order Rule Point
-                                $order_rule_point = OrderRulePoint::where('id', $order_rule_point['id'])->update([
-                                    'rule_calculation_point_id' => $order_rule_point['rule_calculation_point_id'],
-                                    'percentage' => $order_rule_point['percentage'],
-                                    'point' => $point_per_rule,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
+                                    // Insert Order Rule Point
+                                    $order_rule_point = OrderRulePoint::where('id', $order_rule_point['id'])->update([
+                                        'rule_calculation_point_id' => $order_rule_point['rule_calculation_point_id'],
+                                        'percentage' => $order_rule_point['percentage'],
+                                        'point' => $point_per_rule,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
 
-                                // Validation Update Order Rule Point
-                                if (!$order_rule_point) {
-                                    // Failed and Rollback
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Gagal Ubah Rule Item Point'])
-                                        ->withInput();
+                                    // Validation Update Order Rule Point
+                                    if (!$order_rule_point) {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Ubah Rule Item Point'])
+                                            ->withInput();
+                                    }
                                 }
                             }
 
