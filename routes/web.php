@@ -74,7 +74,7 @@ Route::group(['middleware' => ['role:owner']], function () {
     Route::group(['controller' => DashboardController::class, 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
         Route::get('/', 'index')->name('index');
         Route::get('check', 'check')->name('check');
-        Route::get('get-data', 'getData')->name('getData');
+        Route::get('order-statistic', 'orderStatistic')->name('orderStatistic');
     });
 
     /**
