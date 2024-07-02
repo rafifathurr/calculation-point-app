@@ -1,4 +1,7 @@
 <script>
+    $('#customer_phone').select2();
+    $('#customer').css("pointer-events","none");
+
     $("form").submit(function(e) {
         e.preventDefault();
         if ($("input[name='order_item_check[]']").val() === undefined) {
@@ -43,16 +46,21 @@
     function customerCheck() {
 
         let type = $('#type').val();
-        let customer = $('#customer').val();
+        let customer = $('#customer_phone').val();
 
-        if (type == 1) {
-            $.get('{{ url('customer') }}/' + customer, {}).done(function(data) {
-                $('#customer_point').val(data.customer.point);
-                catalogue();
-            }).fail(function(xhr, status, error) {
-                alertError(error);
-            });
+        if (customer != null) {
+            $('#customer').val(customer);
+
+            if (type == 1) {
+                $.get('{{ url('customer') }}/' + customer, {}).done(function(data) {
+                    $('#customer_point').val(data.customer.point);
+                    catalogue();
+                }).fail(function(xhr, status, error) {
+                    alertError(error);
+                });
+            }
         }
+
     }
 
     function catalogue(page) {

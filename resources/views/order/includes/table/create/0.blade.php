@@ -21,65 +21,35 @@
     <tbody id="table_body">
         {{-- @if (!is_null(old('order_item')))
             @foreach (old('order_item') as $menu_id => $order_item)
-            <tr id='tr_order_item_{{ $menu_id }}'>
-                <td>
-                    {{ $sales_order_item['product_name'] }}
-                    <input type="hidden"
-                        name="sales_order_item[{{ $product_id }}][product]"
-                        value="{{ $product_id }}">
-                    <input type="hidden"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][product_size]"
-                        value="{{ $sales_order_item['product_size'] }}">
-                    <input type="hidden"
-                        id="product_size_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][product_name]"
-                        value="{{ $sales_order_item['product_name'] }}">
-                </td>
-                <td>
-                    <input type="number"
-                        class="form-control text-center"
-                        id="qty_{{ $product_size_id }}"
-                        max = '{{ $sales_order_item['stock'] }}'
-                        min='1'
-                        value="{{ $sales_order_item['qty'] }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][qty]">
-                    <input type='hidden'
-                        name = 'sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][stock]'
-                        value = '{{ $sales_order_item['stock'] }}'>
-                    <input type="hidden"
-                        id="capital_price_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][capital_price]"
-                        value="{{ $sales_order_item['capital_price'] }}">
-                    <input type="hidden"
-                        id="sell_price_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][sell_price]"
-                        value="{{ $sales_order_item['sell_price'] }}">
-                    <input type="hidden"
-                        id="discount_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][discount_price]"
-                        value="{{ $sales_order_item['discount_price'] }}">
-                </td>
-                <td align="right">
-                    Rp. <span
-                        id="price_show_{{ $product_size_id }}">{{ number_format($sales_order_item['total_sell_price'], 0, ',', '.') }}</span>
-                    <input type="hidden"
-                        id="total_sell_price_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][total_sell_price]"
-                        value="{{ $sales_order_item['total_sell_price'] }}">
-                    <input type="hidden"
-                        id="total_profit_price_{{ $product_size_id }}"
-                        name="sales_order_item[{{ $product_id }}][product_size][{{ $product_size_id }}][total_profit_price]"
-                        value="{{ $sales_order_item['total_profit_price'] }}">
-                </td>
-                <td align="center">
-                    <button type="button"
-                        class="delete-row btn btn-sm btn-danger"
-                        title="Delete">Del</button>
-                    <input type="hidden"
-                        name="sales_order_item_check[]"
-                        value="{{ $product_size_id }}">
-                </td>
-            </tr>
+                <tr id="menu_{{ $menu_id }}">
+                    <td>
+                        {{ $order_item['name'] }}
+                        <input type="hidden" name="order_item[{{ $menu_id }}][menu]" value="{{ $menu_id }}">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control text-center"
+                            name="order_item[{{ $menu_id }}][qty]" id="order_item_qty_{{ $menu_id }}"
+                            value="{{ $order_item['qty'] }}" readonly required>
+                    </td>
+                    <td>
+                        Rp. <span
+                            id='price_show_{{ $menu_id }}'>{{ number_format($order_item['price'], 0, ',', '.') }}</span>,-
+                        <input type="hidden" name="order_item[{{ $menu_id }}][price]"
+                            id="order_item_price_{{ $menu_id }}" value="{{ $order_item['price'] }}">
+                    </td>
+                    <td>
+                        <span
+                            id='point_show_{{ $menu_id }}'>{{ number_format($order_item['point'], 0, ',', '.') }}</span>
+                        <input type="hidden" name="order_item[{{ $menu_id }}][point]"
+                            id="order_item_point_{{ $menu_id }}" value="{{ $order_item['point'] }}">
+                    </td>
+                    <td>
+                        <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
+                                class="fas fa-trash"></i></button>
+                        <input type="hidden" class="form-control" name="order_item_check[]"
+                            value="{{ $menu_id }}">
+                    </td>
+                </tr>
             @endforeach
         @endif --}}
     </tbody>

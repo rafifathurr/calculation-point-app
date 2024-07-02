@@ -24,10 +24,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('signin', [AuthController::class, 'signin'])->name('signin');
-Route::post('authentication', [AuthController::class, 'authentication'])->name('authentication');
-Route::get('signout', [AuthController::class, 'signout'])->name('signout');
-
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('home');
@@ -40,6 +36,12 @@ Route::get('/', function () {
  * Home Guest Route
  */
 Route::group(['middleware' => 'guest'], function () {
+    /**
+     * Auth Module
+     */
+    Route::get('signin', [AuthController::class, 'signin'])->name('signin');
+    Route::post('authentication', [AuthController::class, 'authentication'])->name('authentication');
+
     /**
      * Route Guest Module
      */
@@ -59,6 +61,15 @@ Route::group(['middleware' => 'guest'], function () {
  * Home Auth Route
  */
 Route::group(['middleware' => 'auth'], function () {
+
+    /**
+     * Auth Sign Out
+     */
+    Route::get('signout', [AuthController::class, 'signout'])->name('signout');
+
+    /**
+     * Home Route
+     */
     Route::get('home', function () {
         return view('home');
     })->name('home');

@@ -50,13 +50,23 @@
                                 <input type="hidden" name="type" id="type" value="{{ $order->type }}">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="customer">Customer <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="customer" name="customer"
-                                            onchange="customerCheck()" required>
-                                            <option disabled hidden selected>Pilih Customer</option>
+                                        <label for="customer_phone">Nomor Telepon Customer <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="customer_phone" onchange="customerCheck()"
+                                            required>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
-                                                    @if ($order->customer_id == $customer->id) selected @endif>
+                                                    @if (!is_null(old('customer')) && old('customer') == $customer->id) selected @endif>
+                                                    {{ $customer->phone }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customer">Nama Customer <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="customer" name="customer" required readonly>
+                                            @foreach ($customers as $customer)
+                                                <option value="{{ $customer->id }}"
+                                                    @if (!is_null(old('customer')) && old('customer') == $customer->id) selected @endif>
                                                     {{ $customer->name }}
                                                 </option>
                                             @endforeach
@@ -65,7 +75,8 @@
                                     @if ($order->type == 0)
                                         <div class="form-group">
                                             <label for="total_percentage">Persentase Point</label>
-                                            <input type="number" class="form-control" id="total_percentage" value="{{ $total_percentage }}" readonly>
+                                            <input type="number" class="form-control" id="total_percentage"
+                                                value="{{ $total_percentage }}" readonly>
                                         </div>
                                     @endif
                                     <div class="table-responsive mt-5 mb-3">
