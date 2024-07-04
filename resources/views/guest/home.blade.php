@@ -16,9 +16,10 @@
                         </div>
                         <div id="carouselExampleIndicators" class="carousel slide mx-5" data-ride="carousel">
                             <ol class="carousel-indicators">
-                                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                @foreach ($promo_point as $index => $promo)
+                                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}"
+                                        @if ($index == 0) class="active" @endif></li>
+                                @endforeach
                             </ol>
                             <div class="carousel-inner pb-3">
                                 @foreach ($promo_point as $index => $promo)
@@ -26,8 +27,8 @@
                                         class="carousel-item rounded-5 border border-1 @if ($index == 0) active @endif">
                                         <div class="col-md-12">
                                             <div class="row justify-content-between">
-                                                <img src="{{ asset($promo->attachment) }}" class="col-md-6 px-0" width="50%"
-                                                    height="20%">
+                                                <img src="{{ asset($promo->attachment) }}" class="col-md-6 px-0"
+                                                    width="50%" height="20%">
                                                 <div class="col-md-6 px-lg-5 py-md-5 mt-sm-3 my-auto">
                                                     <h4 class="font-weight-bold">
                                                         {{ $promo->name }}
