@@ -24,9 +24,13 @@
                                     class="typcn typcn-chart-bar"></i>
                                 Dashboard</a>
                         </li>
-                        <li class="nav-item @if (Route::currentRouteName() == 'order.index') active show @endif">
-                            <a href="{{ route('order.index') }}" class="nav-link"><i class="typcn typcn-clipboard"></i>
+                        <li class="nav-item @if (Route::currentRouteName() == 'order.index' || Route::currentRouteName() == 'customer.index') active show @endif">
+                            <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> Data
                                 Order</a>
+                            <nav class="az-menu-sub">
+                                <a href="{{ route('order.index') }}" class="nav-link">Order</a>
+                                <a href="{{ route('customer.index') }}" class="nav-link">Customer</a>
+                            </nav>
                         </li>
                         <li class="nav-item @if (Route::currentRouteName() == 'rule-calculation-point.index' ||
                                 Route::currentRouteName() == 'menu.index' ||

@@ -61,7 +61,6 @@ Route::group(['middleware' => 'guest'], function () {
  * Home Auth Route
  */
 Route::group(['middleware' => 'auth'], function () {
-
     /**
      * Auth Sign Out
      */
@@ -146,7 +145,7 @@ Route::group(['middleware' => ['role:cashier']], function () {
     Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('customer', CustomerController::class)->parameters(['customer' => 'id']);
+    Route::resource('customer', CustomerController::class, ['except' => ['index', 'show']])->parameters(['customer' => 'id']);
 });
 
 /**
@@ -160,6 +159,14 @@ Route::group(['middleware' => ['role:owner|cashier']], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
     Route::resource('order', OrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['order' => 'id']);
+
+    /**
+     * Route Customer Module
+     */
+    Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
+        Route::get('datatable', 'dataTable')->name('dataTable');
+    });
+    Route::resource('customer', CustomerController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['customer' => 'id']);
 
     /**
      * Route Menu Module
