@@ -14,11 +14,11 @@
                             value="{{ old('name') }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="price">Harga <span class="text-danger">*</span></label>
+                        <label for="price">Harga</label>
                         <div class="input-group">
                             <span class="input-group-text">Rp.</span>
                             <input type="number" class="form-control" id="price" name="price" min="0"
-                                placeholder="Harga Menu" value="{{ old('price') }}" required>
+                                placeholder="Harga Menu" value="{{ old('price') }}">
                         </div>
                     </div>
                     <div class="form-group">

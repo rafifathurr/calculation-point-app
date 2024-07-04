@@ -67,11 +67,12 @@ class OrderController extends Controller
                         // Get Menu Record
                         $menu = Menu::whereNull('deleted_by')
                             ->whereNull('deleted_at')
+                            ->whereNotNull('price')
                             ->where('name', 'like', '%' . $request->search . '%')
                             ->paginate(6);
                     } else {
                         // Get Menu Record
-                        $menu = Menu::whereNull('deleted_by')->whereNull('deleted_at')->paginate(6);
+                        $menu = Menu::whereNull('deleted_by')->whereNull('deleted_at')->whereNotNull('price')->paginate(6);
                     }
 
                     if (count($menu) > 0) {

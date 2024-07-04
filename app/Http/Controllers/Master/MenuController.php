@@ -71,7 +71,6 @@ class MenuController extends Controller
             // Request Validation
             $request->validate([
                 'name' => 'required',
-                'price' => 'required',
                 'attachment' => 'required',
             ]);
 
@@ -235,7 +234,6 @@ class MenuController extends Controller
             // Request Validation
             $request->validate([
                 'name' => 'required',
-                'price' => 'required',
             ]);
 
             // Validation Menu

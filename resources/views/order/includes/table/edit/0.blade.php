@@ -32,13 +32,13 @@
                         id="order_item_qty_{{ $order_item->menu->id }}" value="{{ $order_item->qty }}" readonly
                         required>
                 </td>
-                <td>
+                <td align='right'>
                     Rp. <span
                         id='price_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->price, 0, ',', '.') }}</span>,-
                     <input type="hidden" name="order_item[{{ $order_item->menu->id }}][price]"
                         id="order_item_price_{{ $order_item->menu->id }}" value="{{ $order_item->price }}">
                 </td>
-                <td>
+                <td align='right'>
                     <span
                         id='point_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->point, 0, ',', '.') }}</span>
                     <input type="hidden" name="order_item[{{ $order_item->menu->id }}][point]"

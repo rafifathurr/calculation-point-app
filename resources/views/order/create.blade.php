@@ -49,7 +49,8 @@
                                 <input type="hidden" name="type" id="type" value="{{ $type }}">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="customer_phone">Nomor Telepon Customer <span class="text-danger">*</span></label>
+                                        <label for="customer_phone">Nomor Telepon Customer <span
+                                                class="text-danger">*</span></label>
                                         <select class="form-control" id="customer_phone" onchange="customerCheck()"
                                             required>
                                             @foreach ($customers as $customer)
@@ -76,6 +77,12 @@
                                             <label for="total_percentage">Persentase Point</label>
                                             <input type="number" class="form-control" id="total_percentage"
                                                 value="{{ $total_percentage }}" readonly>
+                                        </div>
+                                    @else
+                                        <div class="form-group">
+                                            <label for="total_percentage">Customer Point</label>
+                                            <input type="number" class="form-control" id="customer_point"
+                                                value="{{ old('customer_point') }}" readonly>
                                         </div>
                                     @endif
                                     <div class="table-responsive mt-5">

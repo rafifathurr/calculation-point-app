@@ -1,4 +1,3 @@
-<input type="hidden" id="customer_point" value="{{ old('customer_point') }}">
 <table class="table table-bordered datatable" id="order_item_table">
     <thead>
         <tr>
@@ -21,8 +20,11 @@
             @foreach (old('order_item') as $menu_id => $order_item)
                 <tr id="menu_{{ $menu_id }}">
                     <td>
-                        {{ $order_item['name'] }}
-                        <input type="hidden" name="order_item[{{ $menu_id }}][menu]" value="{{ $menu_id }}">
+                        {{ $order_item['menu'] }}
+                        <input type="hidden" name="order_item[{{ $menu_id }}][menu]"
+                            value="{{ $order_item['menu'] }}">
+                        <input type="hidden" name="order_item[{{ $menu_id }}][promo_point]"
+                            value="{{ $order_item['promo_point'] }}">
                     </td>
                     <td>
                         <input type="number" class="form-control text-center"

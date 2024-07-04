@@ -23,8 +23,8 @@
             @foreach (old('order_item') as $menu_id => $order_item)
                 <tr id="menu_{{ $menu_id }}">
                     <td>
-                        {{ $order_item['name'] }}
-                        <input type="hidden" name="order_item[{{ $menu_id }}][menu]" value="{{ $menu_id }}">
+                        {{ $order_item['menu'] }}
+                        <input type="hidden" name="order_item[{{ $menu_id }}][menu]" value="{{ $order_item['menu'] }}">
                     </td>
                     <td>
                         <input type="number" class="form-control text-center"

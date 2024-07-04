@@ -1,4 +1,3 @@
-<input type="hidden" id="customer_point" value="{{ $order->customer->point + $order->total_point }}">
 <table class="table table-bordered datatable" id="order_item_table">
     <thead>
         <tr>
@@ -32,7 +31,7 @@
                         id="order_item_qty_{{ $order_item->menu->id }}" value="{{ $order_item->qty }}" readonly
                         required>
                 </td>
-                <td>
+                <td align='right'>
                     <span
                         id='point_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->point, 0, ',', '.') }}</span>
                     <input type="hidden" name="order_item[{{ $order_item->menu->id }}][point]"

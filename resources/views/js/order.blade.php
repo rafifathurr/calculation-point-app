@@ -49,6 +49,7 @@
         let customer = $('#customer_phone').val();
 
         if (customer != null) {
+            $("#order_item_table tbody").empty();
             $('#customer').val(customer);
 
             if (type == 1) {
@@ -148,7 +149,7 @@
                         data.menu.name +
                         "<input type='hidden' name = 'order_item[" + data.menu.id +
                         "][menu]'" +
-                        "value = '" + data.menu.id + "' > " +
+                        "value = '" + data.menu.name + "' > " +
                         "</td>");
 
                     let td_menu_qty = $("<td>" +
@@ -228,7 +229,7 @@
                         data.promo_point.menu.name +
                         "<input type='hidden' name = 'order_item[" + data.promo_point.menu.id +
                         "][menu]'" +
-                        "value = '" + data.promo_point.menu.id + "' > " +
+                        "value = '" + data.promo_point.menu.name + "' > " +
                         "<input type='hidden' name = 'order_item[" + data.promo_point.menu.id +
                         "][promo_point]'" +
                         "value = '" + data.promo_point.id + "' > " +
