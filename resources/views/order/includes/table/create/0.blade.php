@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody id="table_body">
-        {{-- @if (!is_null(old('order_item')))
+        @if (!is_null(old('order_item')))
             @foreach (old('order_item') as $menu_id => $order_item)
                 <tr id="menu_{{ $menu_id }}">
                     <td>
@@ -51,7 +51,7 @@
                     </td>
                 </tr>
             @endforeach
-        @endif --}}
+        @endif
     </tbody>
     <tfoot>
         <tr>

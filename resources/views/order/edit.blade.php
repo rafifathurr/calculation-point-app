@@ -79,10 +79,10 @@
                                                 value="{{ $total_percentage }}" readonly>
                                         </div>
                                     @endif
-                                    <div class="table-responsive mt-5 mb-3">
+                                    <div class="table-responsive mt-5">
                                         @include('order.includes.table.edit.' . $order->type)
                                     </div>
-                                    <div class="float-right mt-3">
+                                    <div class="float-right my-3">
                                         <a href="{{ route('order.index') }}" class="btn btn-sm rounded-5 btn-danger">
                                             <i class="fas fa-arrow-left"></i>
                                             Kembali

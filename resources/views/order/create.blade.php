@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="customer">Nama Customer <span class="text-danger">*</span></label>
-                                        <select class="form-control pointer-events-none" id="customer" name="customer" required readonly>
+                                        <select class="form-control" id="customer" name="customer" required readonly>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
                                                     @if (!is_null(old('customer')) && old('customer') == $customer->id) selected @endif>
@@ -78,10 +78,10 @@
                                                 value="{{ $total_percentage }}" readonly>
                                         </div>
                                     @endif
-                                    <div class="table-responsive mt-5 mb-3">
+                                    <div class="table-responsive mt-5">
                                         @include('order.includes.table.create.' . $type)
                                     </div>
-                                    <div class="float-right mt-3">
+                                    <div class="float-right my-3">
                                         <a href="{{ route('order.index') }}" class="btn btn-sm rounded-5 btn-danger">
                                             <i class="fas fa-arrow-left"></i>
                                             Kembali

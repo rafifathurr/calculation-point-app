@@ -530,7 +530,7 @@ class OrderController extends Controller
                             // Get All Rule from Last Record
                             $result_rule = OrderRulePoint::where('order_id', $id)->get()->toArray();
 
-                            if(!empty($result_rule)) {
+                            if (!empty($result_rule)) {
                                 foreach ($result_rule as $order_rule_point) {
                                     // Calculation New Point
                                     $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
