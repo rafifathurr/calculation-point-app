@@ -152,8 +152,8 @@ class OrderController extends Controller
                 if (User::find(Auth::user()->id)->hasRole('cashier')) {
                     $btn_action .= '<a href="' . route('order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning rounded-5 ml-2" title="Ubah"><i class="fas fa-pencil-alt"></i></a>';
                     $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
-                    $btn_action .= '</div>';
                 }
+                $btn_action .= '</div>';
                 return $btn_action;
             })
             ->only(['name', 'created_at', 'type', 'total_price', 'total_point', 'action'])
