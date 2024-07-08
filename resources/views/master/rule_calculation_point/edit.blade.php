@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <div class="az-content mb-5">
+    <div class="az-content az-content-dashboard mb-5">
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
@@ -48,7 +48,8 @@
                             <label for="year">Tahun <span class="text-danger">*</span></label>
                             <select class="form-control" id="year" name="year" onchange="yearConfiguration()">
                                 <option disabled hidden selected>Pilih Tahun</option>
-                                <option value="" @if (is_null($rule_calculation_point->year)) selected @endif>Tanpa Tahun</option>
+                                <option value="" @if (is_null($rule_calculation_point->year)) selected @endif>Tanpa Tahun
+                                </option>
                                 @for ($year = date('Y'); $year <= date('Y') + 2; $year++)
                                     <option value="{{ $year }}" @if (!is_null($rule_calculation_point->year) && $rule_calculation_point->year == $year) selected @endif>
                                         {{ $year }}</option>
@@ -59,7 +60,7 @@
                             <label for="month">Bulan <span class="text-danger">*</span></label>
                             <select class="form-control" id="month" name="month" onchange="monthConfiguration()">
                                 @foreach ($months as $value => $month)
-                                    <option value="{{ $value }}" @if(!is_null($rule_calculation_point->month) && $rule_calculation_point->month == $value) selected @endif>
+                                    <option value="{{ $value }}" @if (!is_null($rule_calculation_point->month) && $rule_calculation_point->month == $value) selected @endif>
                                         {{ $month }}</option>
                                 @endforeach
                             </select>
@@ -68,7 +69,7 @@
                             <label for="month">Tanggal <span class="text-danger">*</span></label>
                             <select class="form-control" id="day" name="day">
                                 @foreach ($days as $value => $day)
-                                    <option value="{{ $value }}" @if(!is_null($rule_calculation_point->day) && $rule_calculation_point->day == $value) selected @endif>
+                                    <option value="{{ $value }}" @if (!is_null($rule_calculation_point->day) && $rule_calculation_point->day == $value) selected @endif>
                                         {{ $day }}</option>
                                 @endforeach
                             </select>

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <div class="az-content mb-5">
+    <div class="az-content az-content-dashboard mb-5">
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
@@ -20,8 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label for="address">Alamat</label>
-                        <textarea class="form-control" name="address" id="address" cols="10" rows="3"
-                            placeholder="Alamat">{{ old('address') }}</textarea>
+                        <textarea class="form-control" name="address" id="address" cols="10" rows="3" placeholder="Alamat">{{ old('address') }}</textarea>
                     </div>
                     <div class="float-right mt-3">
                         <a href="{{ route('customer.index') }}" class="btn btn-sm rounded-5 btn-danger">

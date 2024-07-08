@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <div class="az-content az-content-dashboard">
+    <div class="az-content az-content-dashboard mb-5">
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
@@ -9,10 +9,10 @@
                 <div class="card rounded-5">
                     <div class="card-header bg-white">
                         <div class="input-group p-2 my-auto">
-                            <input type="number" class="form-control" id="phone" name="phone" min="0" minlength="12" maxlength="13"
-                                placeholder="Masukan Nomor Telepon..." value="">
-                            <button type="button" class="input-group-text bg-primary text-white" onclick="getData()"><i class="typcn typcn-zoom-outline "
-                                    style="font-size:x-large"></i></button>
+                            <input type="number" class="form-control" id="phone" name="phone" min="0"
+                                minlength="12" maxlength="13" placeholder="Masukan Nomor Telepon..." value="">
+                            <button type="button" class="input-group-text bg-primary text-white" onclick="getData()"><i
+                                    class="typcn typcn-zoom-outline " style="font-size:x-large"></i></button>
                         </div>
                     </div>
                     <div class="content">

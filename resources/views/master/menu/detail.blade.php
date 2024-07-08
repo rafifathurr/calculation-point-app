@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <div class="az-content mb-5">
+    <div class="az-content az-content-dashboard mb-5">
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
@@ -22,7 +22,8 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Foto</label>
                         <div class="col-sm-9 col-form-label">
-                            <img width="50%" src="{{ asset($menu->attachment) }}" alt="" class="rounded-5 border border-1-default">
+                            <img width="50%" src="{{ asset($menu->attachment) }}" alt=""
+                                class="rounded-5 border border-1-default">
                         </div>
                     </div>
                     <div class="form-group row">

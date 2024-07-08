@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <div class="az-content mb-5">
+    <div class="az-content az-content-dashboard mb-5">
         <div class="container">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
@@ -17,7 +17,8 @@
                         <label class="col-sm-3 col-form-label">Customer</label>
                         <div class="col-sm-9 col-form-label">
                             <a target="_blank"
-                                href="{{ route('customer.show', ['id' => $order->customer_id]) }}">{{ $order->customer->name }} <i class="typcn typcn-arrow-forward"></i></a>
+                                href="{{ route('customer.show', ['id' => $order->customer_id]) }}">{{ $order->customer->name }}
+                                <i class="typcn typcn-arrow-forward"></i></a>
                         </div>
                     </div>
                     <div class="form-group row">

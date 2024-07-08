@@ -1,6 +1,6 @@
 <script>
     $('#customer_phone').select2();
-    $('#customer').css("pointer-events","none");
+    $('#customer').css("pointer-events", "none");
 
     $("form").submit(function(e) {
         e.preventDefault();
@@ -187,7 +187,7 @@
 
                     let td_menu_action = $(
                         "<td align='center'>" +
-                        "<button type='button' class='delete-row btn btn-sm btn-danger rounded-5' value='Delete'><i class='fas fa-trash'></i></button>" +
+                        "<button type='button' class='delete-row btn btn-sm btn-danger rounded-5' title='Delete'><i class='fas fa-trash'></i></button>" +
                         "<input type='hidden' class='form-control' name='order_item_check[]' value='" +
                         data.menu.id +
                         "'>" +
