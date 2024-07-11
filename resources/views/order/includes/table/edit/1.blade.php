@@ -37,7 +37,7 @@
                     <input type="hidden" name="order_item[{{ $order_item->menu->id }}][point]"
                         id="order_item_point_{{ $order_item->menu->id }}" value="{{ $order_item->point }}">
                 </td>
-                <td>
+                <td align='center'>
                     <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
                             class="fas fa-trash"></i></button>
                     <input type="hidden" class="form-control" name="order_item_check[]"

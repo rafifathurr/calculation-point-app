@@ -32,19 +32,19 @@
                             name="order_item[{{ $menu_id }}][qty]" id="order_item_qty_{{ $menu_id }}"
                             value="{{ $order_item['qty'] }}" readonly required>
                     </td>
-                    <td>
+                    <td align='right'>
                         Rp. <span
                             id='price_show_{{ $menu_id }}'>{{ number_format($order_item['price'], 0, ',', '.') }}</span>,-
                         <input type="hidden" name="order_item[{{ $menu_id }}][price]"
                             id="order_item_price_{{ $menu_id }}" value="{{ $order_item['price'] }}">
                     </td>
-                    <td>
+                    <td align='right'>
                         <span
                             id='point_show_{{ $menu_id }}'>{{ number_format($order_item['point'], 0, ',', '.') }}</span>
                         <input type="hidden" name="order_item[{{ $menu_id }}][point]"
                             id="order_item_point_{{ $menu_id }}" value="{{ $order_item['point'] }}">
                     </td>
-                    <td>
+                    <td align='center'>
                         <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
                                 class="fas fa-trash"></i></button>
                         <input type="hidden" class="form-control" name="order_item_check[]"
@@ -66,19 +66,19 @@
                             name="order_item_promo[{{ $menu_id }}][qty]" id="order_item_qty_{{ $menu_id }}_{{ $order_item_promo['promo_point'] }}"
                             value="{{ $order_item['qty'] }}" readonly required>
                     </td>
-                    <td>
+                    <td align='right'>
                         <span
                             id='price_show_{{ $menu_id }}_{{ $order_item_promo['promo_point'] }}'>{{ number_format($order_item['price'], 0, ',', '.') }}</span>
                         <input type="hidden" name="order_item_promo[{{ $menu_id }}][price]"
                             id="order_item_price_{{ $menu_id }}" value="{{ $order_item['price'] }}">
                     </td>
-                    <td>
+                    <td align='right'>
                         <span
                             id='point_show_{{ $menu_id }}_{{ $order_item_promo['promo_point'] }}'>{{ number_format($order_item['point'], 0, ',', '.') }}</span>
                         <input type="hidden" name="order_item_promo[{{ $menu_id }}][point]"
                             id="order_item_point_{{ $menu_id }}_{{ $order_item_promo['promo_point'] }}" value="{{ $order_item['point'] }}">
                     </td>
-                    <td>
+                    <td align='center'>
                         <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
                                 class="fas fa-trash"></i></button>
                         <input type="hidden" class="form-control" name="order_promo_item_check[]"

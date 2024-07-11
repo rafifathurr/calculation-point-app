@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
     <div class="az-content az-content-dashboard mb-5">
-        <div class="container">
+        <div class="px-5">
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
                     <h4 class="az-dashboard-title" id="title">{{ $title }}</h4>
@@ -49,37 +49,79 @@
                                 @method('patch')
                                 <input type="hidden" name="type" id="type" value="{{ $order->type }}">
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="customer_phone">Nomor Telepon Customer <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control" id="customer_phone" onchange="customerCheck()"
-                                            required>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}"
-                                                    @if ($order->customer->id == $customer->id) selected @endif>
-                                                    {{ $customer->phone }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="customer">Nama Customer <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="customer" name="customer" required readonly>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}"
-                                                    @if ($order->customer->id == $customer->id) selected @endif>
-                                                    {{ $customer->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                     @if ($order->type == 0)
+                                        <div class="form-group">
+                                            <label for="type_option">Tipe Pembayaran <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" id="type_option" name="type_option"
+                                                onchange="customerCheck()" required>
+                                                <option value="0" @if ($type_option == 0) selected @endif>
+                                                    Pembayaran Cash
+                                                </option>
+                                                <option value="2" @if ($type_option == 2) selected @endif>
+                                                    Pembayaran Cash dan Penukaran Point
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="customer_phone">Nomor Telepon Customer <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" id="customer_phone" onchange="customerCheck()"
+                                                required>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}"
+                                                        @if ($order->customer->id == $customer->id) selected @endif>
+                                                        {{ $customer->phone }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="customer">Nama Customer <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="customer" name="customer" required readonly>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}"
+                                                        @if ($order->customer->id == $customer->id) selected @endif>
+                                                        {{ $customer->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="total_percentage">Customer Point</label>
+                                            <input type="number" class="form-control" id="customer_point"
+                                                value="{{ $order->customer->point - $order->total_point }}" readonly>
+                                        </div>
                                         <div class="form-group">
                                             <label for="total_percentage">Persentase Point</label>
                                             <input type="number" class="form-control" id="total_percentage"
                                                 value="{{ $total_percentage }}" readonly>
                                         </div>
                                     @else
+                                        <div class="form-group">
+                                            <label for="customer_phone">Nomor Telepon Customer <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" id="customer_phone" onchange="customerCheck()"
+                                                required>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}"
+                                                        @if ($order->customer->id == $customer->id) selected @endif>
+                                                        {{ $customer->phone }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="customer">Nama Customer <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="customer" name="customer" required readonly>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}"
+                                                        @if ($order->customer->id == $customer->id) selected @endif>
+                                                        {{ $customer->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         <div class="form-group">
                                             <label for="total_percentage">Customer Point</label>
                                             <input type="number" class="form-control" id="customer_point"

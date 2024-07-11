@@ -360,7 +360,6 @@ class OrderController extends Controller
                                 ->with(['failed' => 'Gagal Tambah Item Order'])
                                 ->withInput();
                         }
-
                     } else {
                         // Validation Store Order Item
                         if ($order_item) {
@@ -593,6 +592,22 @@ class OrderController extends Controller
             // Check Request Validation
             if (!is_null($order)) {
                 $data['order'] = $order;
+
+                // Check Payment With Cash and Substraction Point
+                if ($order->type == 0) {
+                    if (
+                        !is_null(
+                            collect($order->orderItem)
+                                ->where('point', '<', 0)
+                                ->first(),
+                        )
+                    ) {
+                        $data['type_option'] = 2;
+                    } else {
+                        $data['type_option'] = 0;
+                    }
+                }
+
                 $data['customers'] = Customer::whereNull('deleted_by')->whereNull('deleted_at')->get();
 
                 if ($order->type == 0) {
@@ -676,114 +691,242 @@ class OrderController extends Controller
                         // Insert New Record Order Item
                         $order_item = OrderItem::lockForUpdate()->insert($order_item_request);
 
-                        // Validation Store Order Item
-                        if ($order_item) {
-                            // Get All Rule from Last Record
-                            $result_rule = OrderRulePoint::where('order_id', $id)->get()->toArray();
+                        if (isset($request->order_item_promo)) {
+                            foreach ($request->order_item_promo as $menu_id => $order_item_promo) {
+                                $order_item_prom_request[] = [
+                                    'order_id' => $id,
+                                    'menu_id' => $menu_id,
+                                    'promo_point_id' => $order_item_promo['promo_point'],
+                                    'qty' => $order_item_promo['qty'],
+                                    'price' => $order_item_promo['price'],
+                                    'point' => $order_item_promo['point'],
+                                    'created_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                ];
+                            }
 
-                            if (!empty($result_rule)) {
-                                foreach ($result_rule as $order_rule_point) {
-                                    // Calculation New Point
-                                    $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
+                            // Insert Order Item Promo
+                            $order_item_promo = OrderItem::lockForUpdate()->insert($order_item_prom_request);
 
-                                    // Insert Order Rule Point
-                                    $order_rule_point = OrderRulePoint::where('id', $order_rule_point['id'])->update([
-                                        'rule_calculation_point_id' => $order_rule_point['rule_calculation_point_id'],
-                                        'percentage' => $order_rule_point['percentage'],
-                                        'point' => $point_per_rule,
+                            // Validation Store Order Item
+                            if ($order_item && $order_item_promo) {
+                                // Get All Rule from Last Record
+                                $result_rule = OrderRulePoint::where('order_id', $id)->get()->toArray();
+
+                                if (!empty($result_rule)) {
+                                    foreach ($result_rule as $order_rule_point) {
+                                        // Calculation New Point
+                                        $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
+
+                                        // Insert Order Rule Point
+                                        $order_rule_point = OrderRulePoint::where('id', $order_rule_point['id'])->update([
+                                            'rule_calculation_point_id' => $order_rule_point['rule_calculation_point_id'],
+                                            'percentage' => $order_rule_point['percentage'],
+                                            'point' => $point_per_rule,
+                                            'updated_by' => Auth::user()->id,
+                                        ]);
+
+                                        // Validation Update Order Rule Point
+                                        if (!$order_rule_point) {
+                                            // Failed and Rollback
+                                            DB::rollBack();
+                                            return redirect()
+                                                ->back()
+                                                ->with(['failed' => 'Gagal Ubah Rule Item Point'])
+                                                ->withInput();
+                                        }
+                                    }
+                                }
+
+                                // Validation Customer Request
+                                if ($request->customer == $order_last_record->customer_id) {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($request->customer);
+
+                                    // Calculation Point
+                                    $substraction_last_point = $customer_record->point - $order_last_record->total_point;
+
+                                    // Update New Point
+                                    $add_point = $substraction_last_point + $request->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $request->customer)->update([
+                                        'point' => $add_point,
                                         'updated_by' => Auth::user()->id,
                                     ]);
 
-                                    // Validation Update Order Rule Point
-                                    if (!$order_rule_point) {
+                                    // Validation Update Customer Point
+                                    if ($customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $id])
+                                            ->with(['success' => 'Berhasil Ubah Order']);
+                                    } else {
                                         // Failed and Rollback
                                         DB::rollBack();
                                         return redirect()
                                             ->back()
-                                            ->with(['failed' => 'Gagal Ubah Rule Item Point'])
+                                            ->with(['failed' => 'Gagal Ubah Point Customer'])
+                                            ->withInput();
+                                    }
+                                } else {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($order_last_record->customer_id);
+
+                                    // Substraction Point
+                                    $substraction_last_point = $customer_record->point - $order_last_record->total_point;
+
+                                    // Update Customer Substraction Point
+                                    $customer_substraction_update = Customer::where('id', $order_last_record->customer_id)->update([
+                                        'point' => $substraction_last_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Get Request Record Customer
+                                    $customer_update_record = Customer::find($request->customer);
+
+                                    // Calculation Point
+                                    $add_point = $customer_update_record->point + $request->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $request->customer)->update([
+                                        'point' => $add_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Validation Update Customer Point
+                                    if ($customer_substraction_update && $customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $id])
+                                            ->with(['success' => 'Berhasil Ubah Order']);
+                                    } else {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Ubah Point Customer'])
                                             ->withInput();
                                     }
                                 }
-                            }
-
-                            // Validation Customer Request
-                            if ($request->customer == $order_last_record->customer_id) {
-                                // Get Last Record Customer
-                                $customer_record = Customer::find($request->customer);
-
-                                // Calculation Point
-                                $substraction_last_point = $customer_record->point - $order_last_record->total_point;
-
-                                // Update New Point
-                                $add_point = $substraction_last_point + $request->total_point;
-
-                                // Update Customer Point
-                                $customer_update = Customer::where('id', $request->customer)->update([
-                                    'point' => $add_point,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                // Validation Update Customer Point
-                                if ($customer_update) {
-                                    DB::commit();
-                                    return redirect()
-                                        ->route('order.show', ['id' => $id])
-                                        ->with(['success' => 'Berhasil Ubah Order']);
-                                } else {
-                                    // Failed and Rollback
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Gagal Ubah Point Customer'])
-                                        ->withInput();
-                                }
                             } else {
-                                // Get Last Record Customer
-                                $customer_record = Customer::find($order_last_record->customer_id);
-
-                                // Substraction Point
-                                $substraction_last_point = $customer_record->point - $order_last_record->total_point;
-
-                                // Update Customer Substraction Point
-                                $customer_substraction_update = Customer::where('id', $order_last_record->customer_id)->update([
-                                    'point' => $substraction_last_point,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                // Get Request Record Customer
-                                $customer_update_record = Customer::find($request->customer);
-
-                                // Calculation Point
-                                $add_point = $customer_update_record->point + $request->total_point;
-
-                                // Update Customer Point
-                                $customer_update = Customer::where('id', $request->customer)->update([
-                                    'point' => $add_point,
-                                    'updated_by' => Auth::user()->id,
-                                ]);
-
-                                // Validation Update Customer Point
-                                if ($customer_substraction_update && $customer_update) {
-                                    DB::commit();
-                                    return redirect()
-                                        ->route('order.show', ['id' => $id])
-                                        ->with(['success' => 'Berhasil Ubah Order']);
-                                } else {
-                                    // Failed and Rollback
-                                    DB::rollBack();
-                                    return redirect()
-                                        ->back()
-                                        ->with(['failed' => 'Gagal Ubah Point Customer'])
-                                        ->withInput();
-                                }
+                                // Failed and Rollback
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Gagal Tambah Item Order'])
+                                    ->withInput();
                             }
                         } else {
-                            // Failed and Rollback
-                            DB::rollBack();
-                            return redirect()
-                                ->back()
-                                ->with(['failed' => 'Gagal Tambah Item Order'])
-                                ->withInput();
+                            // Validation Store Order Item
+                            if ($order_item) {
+                                // Get All Rule from Last Record
+                                $result_rule = OrderRulePoint::where('order_id', $id)->get()->toArray();
+
+                                if (!empty($result_rule)) {
+                                    foreach ($result_rule as $order_rule_point) {
+                                        // Calculation New Point
+                                        $point_per_rule = $request->total_price * ($order_rule_point['percentage'] / 100);
+
+                                        // Insert Order Rule Point
+                                        $order_rule_point = OrderRulePoint::where('id', $order_rule_point['id'])->update([
+                                            'rule_calculation_point_id' => $order_rule_point['rule_calculation_point_id'],
+                                            'percentage' => $order_rule_point['percentage'],
+                                            'point' => $point_per_rule,
+                                            'updated_by' => Auth::user()->id,
+                                        ]);
+
+                                        // Validation Update Order Rule Point
+                                        if (!$order_rule_point) {
+                                            // Failed and Rollback
+                                            DB::rollBack();
+                                            return redirect()
+                                                ->back()
+                                                ->with(['failed' => 'Gagal Ubah Rule Item Point'])
+                                                ->withInput();
+                                        }
+                                    }
+                                }
+
+                                // Validation Customer Request
+                                if ($request->customer == $order_last_record->customer_id) {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($request->customer);
+
+                                    // Calculation Point
+                                    $substraction_last_point = $customer_record->point - $order_last_record->total_point;
+
+                                    // Update New Point
+                                    $add_point = $substraction_last_point + $request->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $request->customer)->update([
+                                        'point' => $add_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Validation Update Customer Point
+                                    if ($customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $id])
+                                            ->with(['success' => 'Berhasil Ubah Order']);
+                                    } else {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Ubah Point Customer'])
+                                            ->withInput();
+                                    }
+                                } else {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($order_last_record->customer_id);
+
+                                    // Substraction Point
+                                    $substraction_last_point = $customer_record->point - $order_last_record->total_point;
+
+                                    // Update Customer Substraction Point
+                                    $customer_substraction_update = Customer::where('id', $order_last_record->customer_id)->update([
+                                        'point' => $substraction_last_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Get Request Record Customer
+                                    $customer_update_record = Customer::find($request->customer);
+
+                                    // Calculation Point
+                                    $add_point = $customer_update_record->point + $request->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $request->customer)->update([
+                                        'point' => $add_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Validation Update Customer Point
+                                    if ($customer_substraction_update && $customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $id])
+                                            ->with(['success' => 'Berhasil Ubah Order']);
+                                    } else {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Ubah Point Customer'])
+                                            ->withInput();
+                                    }
+                                }
+                            } else {
+                                // Failed and Rollback
+                                DB::rollBack();
+                                return redirect()
+                                    ->back()
+                                    ->with(['failed' => 'Gagal Tambah Item Order'])
+                                    ->withInput();
+                            }
                         }
                     } else {
                         // Failed and Rollback

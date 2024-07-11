@@ -20,37 +20,72 @@
     </thead>
     <tbody id="table_body">
         @foreach ($order->orderItem as $order_item)
-            <tr id="menu_{{ $order_item->menu->id }}">
-                <td>
-                    {{ $order_item->menu->name }}
-                    <input type="hidden" name="order_item[{{ $order_item->menu->id }}][menu]"
-                        value="{{ $order_item->menu->id }}">
-                </td>
-                <td>
-                    <input type="number" class="form-control text-center"
-                        name="order_item[{{ $order_item->menu->id }}][qty]"
-                        id="order_item_qty_{{ $order_item->menu->id }}" value="{{ $order_item->qty }}" readonly
-                        required>
-                </td>
-                <td align='right'>
-                    Rp. <span
-                        id='price_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->price, 0, ',', '.') }}</span>,-
-                    <input type="hidden" name="order_item[{{ $order_item->menu->id }}][price]"
-                        id="order_item_price_{{ $order_item->menu->id }}" value="{{ $order_item->price }}">
-                </td>
-                <td align='right'>
-                    <span
-                        id='point_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->point, 0, ',', '.') }}</span>
-                    <input type="hidden" name="order_item[{{ $order_item->menu->id }}][point]"
-                        id="order_item_point_{{ $order_item->menu->id }}" value="{{ $order_item->point }}">
-                </td>
-                <td>
-                    <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
-                            class="fas fa-trash"></i></button>
-                    <input type="hidden" class="form-control" name="order_item_check[]"
-                        value="{{ $order_item->menu->id }}">
-                </td>
-            </tr>
+            @if (!is_null($order_item->promo_point_id))
+                <tr id="menu_{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}">
+                    <td>
+                        {{ $order_item->menu->name }}
+                        <input type="hidden" name="order_item_promo[{{ $order_item->menu->id }}][menu]"
+                            value="{{ $order_item->menu->name }}">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control text-center"
+                            name="order_item_promo[{{ $order_item->menu->id }}][qty]"
+                            id="order_item_qty_{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}"
+                            value="{{ $order_item->qty }}" readonly required>
+                    </td>
+                    <td align='right'>
+                        <span
+                            id='price_show_{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}'>{{ number_format($order_item['price'], 0, ',', '.') }}</span>
+                        <input type="hidden" name="order_item_promo[{{ $order_item->menu->id }}][price]"
+                            id="order_item_price_{{ $order_item->menu->id }}" value="{{ $order_item->price }}">
+                    </td>
+                    <td align='right'>
+                        <span
+                            id='point_show_{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}'>{{ number_format($order_item['point'], 0, ',', '.') }}</span>
+                        <input type="hidden" name="order_item_promo[{{ $order_item->menu->id }}][point]"
+                            id="order_item_point_{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}"
+                            value="{{ $order_item->point }}">
+                    </td>
+                    <td align='center'>
+                        <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
+                                class="fas fa-trash"></i></button>
+                        <input type="hidden" class="form-control" name="order_promo_item_check[]"
+                            value="{{ $order_item->menu->id }}_{{ $order_item->promoPoint->id }}">
+                    </td>
+                </tr>
+            @else
+                <tr id="menu_{{ $order_item->menu->id }}">
+                    <td>
+                        {{ $order_item->menu->name }}
+                        <input type="hidden" name="order_item[{{ $order_item->menu->id }}][menu]"
+                            value="{{ $order_item->menu->id }}">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control text-center"
+                            name="order_item[{{ $order_item->menu->id }}][qty]"
+                            id="order_item_qty_{{ $order_item->menu->id }}" value="{{ $order_item->qty }}" readonly
+                            required>
+                    </td>
+                    <td align='right'>
+                        Rp. <span
+                            id='price_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->price, 0, ',', '.') }}</span>,-
+                        <input type="hidden" name="order_item[{{ $order_item->menu->id }}][price]"
+                            id="order_item_price_{{ $order_item->menu->id }}" value="{{ $order_item->price }}">
+                    </td>
+                    <td align='right'>
+                        <span
+                            id='point_show_{{ $order_item->menu->id }}'>{{ number_format($order_item->point, 0, ',', '.') }}</span>
+                        <input type="hidden" name="order_item[{{ $order_item->menu->id }}][point]"
+                            id="order_item_point_{{ $order_item->menu->id }}" value="{{ $order_item->point }}">
+                    </td>
+                    <td align='center'>
+                        <button type="button" class="delete-row btn btn-sm btn-danger rounded-5" value="Delete"><i
+                                class="fas fa-trash"></i></button>
+                        <input type="hidden" class="form-control" name="order_item_check[]"
+                            value="{{ $order_item->menu->id }}">
+                    </td>
+                </tr>
+            @endif
         @endforeach
     </tbody>
     <tfoot>
