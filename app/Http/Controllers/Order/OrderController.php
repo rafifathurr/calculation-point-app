@@ -74,43 +74,74 @@ class OrderController extends Controller
                         // Get Menu Record
                         $menu = Menu::whereNull('deleted_by')->whereNull('deleted_at')->whereNotNull('price')->paginate(6);
                     }
-
-                    if (count($menu) > 0) {
-                        return view('order.includes.catalogue.menu', ['menus' => $menu]);
-                    } else {
-                        return view('order.includes.catalogue.notfound');
-                    }
                 } else {
-                    if (!is_null($request->search)) {
-                        // Get Menu Record
-                        $menu = PromoPoint::with(['menu'])
-                            ->whereNull('deleted_by')
-                            ->whereNull('deleted_at')
-                            ->where('status', 1)
-                            ->where('point', '<=', $request->point)
-                            ->whereDate('start_on', '<=', date('Y-m-d'))
-                            ->whereDate('expired_on', '>=', date('Y-m-d'))
-                            ->whereHas('menu', function ($query) use ($request) {
-                                return $query->where('name', 'like', '%' . $request->search . '%');
-                            })
-                            ->paginate(6);
-                    } else {
-                        // Get Menu Record
-                        $menu = PromoPoint::with(['menu'])
-                            ->whereNull('deleted_by')
-                            ->whereNull('deleted_at')
-                            ->where('status', 1)
-                            ->where('point', '<=', $request->point)
-                            ->whereDate('start_on', '<=', date('Y-m-d'))
-                            ->whereDate('expired_on', '>=', date('Y-m-d'))
-                            ->paginate(6);
-                    }
+                    if ($request->type == 1) {
+                        if (!is_null($request->search)) {
+                            // Get Menu Record
+                            $menu = PromoPoint::with(['menu'])
+                                ->whereNull('deleted_by')
+                                ->whereNull('deleted_at')
+                                ->where('status', 1)
+                                ->where('point', '<=', $request->point)
+                                ->whereDate('start_on', '<=', date('Y-m-d'))
+                                ->whereDate('expired_on', '>=', date('Y-m-d'))
+                                ->whereHas('menu', function ($query) use ($request) {
+                                    return $query->where('name', 'like', '%' . $request->search . '%');
+                                })
+                                ->paginate(6);
+                        } else {
+                            // Get Menu Record
+                            $menu = PromoPoint::with(['menu'])
+                                ->whereNull('deleted_by')
+                                ->whereNull('deleted_at')
+                                ->where('status', 1)
+                                ->where('point', '<=', $request->point)
+                                ->whereDate('start_on', '<=', date('Y-m-d'))
+                                ->whereDate('expired_on', '>=', date('Y-m-d'))
+                                ->paginate(6);
+                        }
 
-                    if (count($menu) > 0) {
-                        return view('order.includes.catalogue.promo_point', ['menus' => $menu]);
+                        if (count($menu) > 0) {
+                            return view('order.includes.catalogue.promo_point', ['menus' => $menu]);
+                        } else {
+                            return view('order.includes.catalogue.notfound');
+                        }
                     } else {
-                        return view('order.includes.catalogue.notfound');
+                        if (!is_null($request->search)) {
+                            // Get Menu Record
+                            $menu = Menu::with([
+                                'promoPoint' => function ($q) use ($request) {
+                                    $q->where('status', 1)
+                                        ->where('point', '<=', $request->point)
+                                        ->whereDate('start_on', '<=', date('Y-m-d'))
+                                        ->whereDate('expired_on', '>=', date('Y-m-d'));
+                                },
+                            ])
+                                ->whereNull('deleted_by')
+                                ->whereNull('deleted_at')
+                                ->where('name', 'like', '%' . $request->search . '%')
+                                ->paginate(6);
+                        } else {
+                            // Get Menu Record
+                            $menu = Menu::with([
+                                'promoPoint' => function ($q) use ($request) {
+                                    $q->where('status', 1)
+                                        ->where('point', '<=', $request->point)
+                                        ->whereDate('start_on', '<=', date('Y-m-d'))
+                                        ->whereDate('expired_on', '>=', date('Y-m-d'));
+                                },
+                            ])
+                                ->whereNull('deleted_by')
+                                ->whereNull('deleted_at')
+                                ->paginate(6);
+                        }
                     }
+                }
+
+                if (count($menu) > 0) {
+                    return view('order.includes.catalogue.menu', ['menus' => $menu, 'type' => $request->type]);
+                } else {
+                    return view('order.includes.catalogue.notfound');
                 }
             } else {
                 return view('order.includes.default');
@@ -202,6 +233,7 @@ class OrderController extends Controller
                         $order_item_request[] = [
                             'order_id' => $order->id,
                             'menu_id' => $menu_id,
+                            'promo_point_id' => $order_item['promo_point'],
                             'qty' => $order_item['qty'],
                             'price' => $order_item['price'],
                             'point' => $order_item['point'],
@@ -213,34 +245,86 @@ class OrderController extends Controller
                     // Insert Order Item
                     $order_item = OrderItem::lockForUpdate()->insert($order_item_request);
 
-                    // Validation Store Order Item
-                    if ($order_item) {
-                        // Get All Current Rule Available
-                        $rule_all = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->get()->toArray();
-                        $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->get()->toArray();
-                        $rule_date_with_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->get()->toArray();
+                    if (isset($request->order_item_promo)) {
+                        foreach ($request->order_item_promo as $menu_id => $order_item_promo) {
+                            $order_item_prom_request[] = [
+                                'order_id' => $order->id,
+                                'menu_id' => $menu_id,
+                                'promo_point_id' => $order_item_promo['promo_point'],
+                                'qty' => $order_item_promo['qty'],
+                                'price' => $order_item_promo['price'],
+                                'point' => $order_item_promo['point'],
+                                'created_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                            ];
+                        }
 
-                        // Merge to single array
-                        $result_rule = array_merge($rule_all, $rule_date_without_year, $rule_date_with_year);
+                        // Insert Order Item Promo
+                        $order_item_promo = OrderItem::lockForUpdate()->insert($order_item_prom_request);
 
-                        if (!empty($result_rule)) {
-                            foreach ($result_rule as $rule_calculation_point) {
-                                $point_per_rule = $request->total_price * ($rule_calculation_point['percentage'] / 100);
-                                $order_rule_point_request[] = [
-                                    'order_id' => $order->id,
-                                    'rule_calculation_point_id' => $rule_calculation_point['id'],
-                                    'percentage' => $rule_calculation_point['percentage'],
-                                    'point' => $point_per_rule,
-                                    'created_by' => Auth::user()->id,
-                                    'updated_by' => Auth::user()->id,
-                                ];
-                            }
+                        // Validation Store Order Item
+                        if ($order_item && $order_item_promo) {
+                            // Get All Current Rule Available
+                            $rule_all = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->get()->toArray();
+                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->get()->toArray();
+                            $rule_date_with_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->get()->toArray();
 
-                            // Insert Order Rule Point
-                            $order_rule_point = OrderRulePoint::lockForUpdate()->insert($order_rule_point_request);
+                            // Merge to single array
+                            $result_rule = array_merge($rule_all, $rule_date_without_year, $rule_date_with_year);
 
-                            // Validation Store Order Rule Point
-                            if ($order_rule_point) {
+                            if (!empty($result_rule)) {
+                                foreach ($result_rule as $rule_calculation_point) {
+                                    $point_per_rule = $request->total_price * ($rule_calculation_point['percentage'] / 100);
+                                    $order_rule_point_request[] = [
+                                        'order_id' => $order->id,
+                                        'rule_calculation_point_id' => $rule_calculation_point['id'],
+                                        'percentage' => $rule_calculation_point['percentage'],
+                                        'point' => $point_per_rule,
+                                        'created_by' => Auth::user()->id,
+                                        'updated_by' => Auth::user()->id,
+                                    ];
+                                }
+
+                                // Insert Order Rule Point
+                                $order_rule_point = OrderRulePoint::lockForUpdate()->insert($order_rule_point_request);
+
+                                // Validation Store Order Rule Point
+                                if ($order_rule_point) {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($order->customer_id);
+
+                                    // Calculation Point
+                                    $add_point = $customer_record->point + $order->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $order->customer_id)->update([
+                                        'point' => $add_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Validation Update Customer Point
+                                    if ($customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $order->id])
+                                            ->with(['success' => 'Berhasil Menambahkan Order']);
+                                    } else {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Tambah Point Customer'])
+                                            ->withInput();
+                                    }
+                                } else {
+                                    // Failed and Rollback
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Gagal Tambah Rule Item Point'])
+                                        ->withInput();
+                                }
+                            } else {
                                 // Get Last Record Customer
                                 $customer_record = Customer::find($order->customer_id);
 
@@ -257,7 +341,7 @@ class OrderController extends Controller
                                 if ($customer_update) {
                                     DB::commit();
                                     return redirect()
-                                        ->route('order.index')
+                                        ->route('order.show', ['id' => $order->id])
                                         ->with(['success' => 'Berhasil Menambahkan Order']);
                                 } else {
                                     // Failed and Rollback
@@ -267,49 +351,115 @@ class OrderController extends Controller
                                         ->with(['failed' => 'Gagal Tambah Point Customer'])
                                         ->withInput();
                                 }
-                            } else {
-                                // Failed and Rollback
-                                DB::rollBack();
-                                return redirect()
-                                    ->back()
-                                    ->with(['failed' => 'Gagal Tambah Rule Item Point'])
-                                    ->withInput();
                             }
                         } else {
-                            // Get Last Record Customer
-                            $customer_record = Customer::find($order->customer_id);
-
-                            // Calculation Point
-                            $add_point = $customer_record->point + $order->total_point;
-
-                            // Update Customer Point
-                            $customer_update = Customer::where('id', $order->customer_id)->update([
-                                'point' => $add_point,
-                                'updated_by' => Auth::user()->id,
-                            ]);
-
-                            // Validation Update Customer Point
-                            if ($customer_update) {
-                                DB::commit();
-                                return redirect()
-                                    ->route('order.index')
-                                    ->with(['success' => 'Berhasil Menambahkan Order']);
-                            } else {
-                                // Failed and Rollback
-                                DB::rollBack();
-                                return redirect()
-                                    ->back()
-                                    ->with(['failed' => 'Gagal Tambah Point Customer'])
-                                    ->withInput();
-                            }
+                            // Failed and Rollback
+                            DB::rollBack();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Gagal Tambah Item Order'])
+                                ->withInput();
                         }
+
                     } else {
-                        // Failed and Rollback
-                        DB::rollBack();
-                        return redirect()
-                            ->back()
-                            ->with(['failed' => 'Gagal Tambah Item Order'])
-                            ->withInput();
+                        // Validation Store Order Item
+                        if ($order_item) {
+                            // Get All Current Rule Available
+                            $rule_all = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->get()->toArray();
+                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->get()->toArray();
+                            $rule_date_with_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->get()->toArray();
+
+                            // Merge to single array
+                            $result_rule = array_merge($rule_all, $rule_date_without_year, $rule_date_with_year);
+
+                            if (!empty($result_rule)) {
+                                foreach ($result_rule as $rule_calculation_point) {
+                                    $point_per_rule = $request->total_price * ($rule_calculation_point['percentage'] / 100);
+                                    $order_rule_point_request[] = [
+                                        'order_id' => $order->id,
+                                        'rule_calculation_point_id' => $rule_calculation_point['id'],
+                                        'percentage' => $rule_calculation_point['percentage'],
+                                        'point' => $point_per_rule,
+                                        'created_by' => Auth::user()->id,
+                                        'updated_by' => Auth::user()->id,
+                                    ];
+                                }
+
+                                // Insert Order Rule Point
+                                $order_rule_point = OrderRulePoint::lockForUpdate()->insert($order_rule_point_request);
+
+                                // Validation Store Order Rule Point
+                                if ($order_rule_point) {
+                                    // Get Last Record Customer
+                                    $customer_record = Customer::find($order->customer_id);
+
+                                    // Calculation Point
+                                    $add_point = $customer_record->point + $order->total_point;
+
+                                    // Update Customer Point
+                                    $customer_update = Customer::where('id', $order->customer_id)->update([
+                                        'point' => $add_point,
+                                        'updated_by' => Auth::user()->id,
+                                    ]);
+
+                                    // Validation Update Customer Point
+                                    if ($customer_update) {
+                                        DB::commit();
+                                        return redirect()
+                                            ->route('order.show', ['id' => $order->id])
+                                            ->with(['success' => 'Berhasil Menambahkan Order']);
+                                    } else {
+                                        // Failed and Rollback
+                                        DB::rollBack();
+                                        return redirect()
+                                            ->back()
+                                            ->with(['failed' => 'Gagal Tambah Point Customer'])
+                                            ->withInput();
+                                    }
+                                } else {
+                                    // Failed and Rollback
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Gagal Tambah Rule Item Point'])
+                                        ->withInput();
+                                }
+                            } else {
+                                // Get Last Record Customer
+                                $customer_record = Customer::find($order->customer_id);
+
+                                // Calculation Point
+                                $add_point = $customer_record->point + $order->total_point;
+
+                                // Update Customer Point
+                                $customer_update = Customer::where('id', $order->customer_id)->update([
+                                    'point' => $add_point,
+                                    'updated_by' => Auth::user()->id,
+                                ]);
+
+                                // Validation Update Customer Point
+                                if ($customer_update) {
+                                    DB::commit();
+                                    return redirect()
+                                        ->route('order.show', ['id' => $order->id])
+                                        ->with(['success' => 'Berhasil Menambahkan Order']);
+                                } else {
+                                    // Failed and Rollback
+                                    DB::rollBack();
+                                    return redirect()
+                                        ->back()
+                                        ->with(['failed' => 'Gagal Tambah Point Customer'])
+                                        ->withInput();
+                                }
+                            }
+                        } else {
+                            // Failed and Rollback
+                            DB::rollBack();
+                            return redirect()
+                                ->back()
+                                ->with(['failed' => 'Gagal Tambah Item Order'])
+                                ->withInput();
+                        }
                     }
                 } else {
                     // Failed and Rollback
@@ -371,7 +521,7 @@ class OrderController extends Controller
                         if ($customer_update) {
                             DB::commit();
                             return redirect()
-                                ->route('order.index')
+                                ->route('order.show', ['id' => $order->id])
                                 ->with(['success' => 'Berhasil Menambahkan Order']);
                         } else {
                             // Failed and Rollback
@@ -577,7 +727,7 @@ class OrderController extends Controller
                                 if ($customer_update) {
                                     DB::commit();
                                     return redirect()
-                                        ->route('order.index')
+                                        ->route('order.show', ['id' => $id])
                                         ->with(['success' => 'Berhasil Ubah Order']);
                                 } else {
                                     // Failed and Rollback
@@ -616,7 +766,7 @@ class OrderController extends Controller
                                 if ($customer_substraction_update && $customer_update) {
                                     DB::commit();
                                     return redirect()
-                                        ->route('order.index')
+                                        ->route('order.show', ['id' => $id])
                                         ->with(['success' => 'Berhasil Ubah Order']);
                                 } else {
                                     // Failed and Rollback
@@ -719,7 +869,7 @@ class OrderController extends Controller
                                 if ($customer_update) {
                                     DB::commit();
                                     return redirect()
-                                        ->route('order.index')
+                                        ->route('order.show', ['id' => $id])
                                         ->with(['success' => 'Berhasil Ubah Order']);
                                 } else {
                                     // Failed and Rollback
@@ -758,7 +908,7 @@ class OrderController extends Controller
                                 if ($customer_substraction_update && $customer_update) {
                                     DB::commit();
                                     return redirect()
-                                        ->route('order.index')
+                                        ->route('order.show', ['id' => $id])
                                         ->with(['success' => 'Berhasil Ubah Order']);
                                 } else {
                                     // Failed and Rollback

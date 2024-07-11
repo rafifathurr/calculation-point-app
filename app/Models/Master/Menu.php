@@ -12,6 +12,10 @@ class Menu extends Model
     protected $table = 'menu';
     protected $guarded = [];
 
+    public function promoPoint()
+    {
+        return $this->hasOne(PromoPoint::class, 'menu_id', 'id')->whereNull('deleted_by')->whereNull('deleted_at');
+    }
     public function createdBy()
     {
         return $this->hasOne(User::class, 'id', 'created_by');

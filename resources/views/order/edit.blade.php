@@ -56,7 +56,7 @@
                                             required>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
-                                                    @if (!is_null(old('customer')) && old('customer') == $customer->id) selected @endif>
+                                                    @if ($order->customer->id == $customer->id) selected @endif>
                                                     {{ $customer->phone }}
                                                 </option>
                                             @endforeach
@@ -67,7 +67,7 @@
                                         <select class="form-control" id="customer" name="customer" required readonly>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
-                                                    @if (!is_null(old('customer')) && old('customer') == $customer->id) selected @endif>
+                                                    @if ($order->customer->id == $customer->id) selected @endif>
                                                     {{ $customer->name }}
                                                 </option>
                                             @endforeach
