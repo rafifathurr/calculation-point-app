@@ -311,7 +311,7 @@ class PromoPointController extends Controller
                         // Check Upload Success
                         if (Storage::exists($path . '/' . $file_name)) {
                             // Update Record for Attachment
-                            $promo_point_attachment_update = PromoPoint::where('id', $id)->update([
+                            $promo_point_attachment_update = $promo_point->update([
                                 'attachment' => $path_store . '/' . $file_name,
                             ]);
 
