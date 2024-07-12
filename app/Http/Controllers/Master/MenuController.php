@@ -78,7 +78,7 @@ class MenuController extends Controller
             $menu_name_validation = Menu::whereNull('deleted_by')
                 ->whereNull('deleted_at')
                 ->where('name', $request->name)
-                ->orWhere('name', strtolower($request->name))
+                ->where('name', strtolower($request->name))
                 ->first();
 
             // Va;idation Condition Field
@@ -241,7 +241,7 @@ class MenuController extends Controller
             $menu_name_validation = Menu::whereNull('deleted_by')
                 ->whereNull('deleted_at')
                 ->where('name', $request->name)
-                ->orWhere('name', strtolower($request->name))
+                ->where('name', strtolower($request->name))
                 ->where('id', '!=', $id)
                 ->first();
 
@@ -299,7 +299,7 @@ class MenuController extends Controller
                             // Check Upload Success
                             if (Storage::exists($path . '/' . $file_name)) {
                                 // Update Record for Attachment
-                                $menu_attachment_update = Menu::where('id', $id)->update([
+                                $menu_attachment_update = $menu->update([
                                     'attachment' => $path_store . '/' . $file_name,
                                 ]);
 
