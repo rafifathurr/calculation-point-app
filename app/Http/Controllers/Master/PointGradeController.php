@@ -79,7 +79,8 @@ class PointGradeController extends Controller
             // Validation Name Range Point Grade
             $name_validation = PointGrade::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->orWhere('name', strtolower($request->name))
                 ->first();
 
             // Validation Condition Field
@@ -196,7 +197,8 @@ class PointGradeController extends Controller
             // Validation Name Range Point Grade
             $name_validation = PointGrade::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->orWhere('name', strtolower($request->name))
                 ->where('id', '!=', $id)
                 ->first();
 

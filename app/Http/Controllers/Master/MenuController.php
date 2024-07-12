@@ -77,7 +77,8 @@ class MenuController extends Controller
             // Validation Menu
             $menu_name_validation = Menu::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->orWhere('name', strtolower($request->name))
                 ->first();
 
             // Va;idation Condition Field
@@ -239,7 +240,8 @@ class MenuController extends Controller
             // Validation Menu
             $menu_name_validation = Menu::whereNull('deleted_by')
                 ->whereNull('deleted_at')
-                ->where('name', 'like', '%' . $request->name . '%')
+                ->where('name', $request->name)
+                ->orWhere('name', strtolower($request->name))
                 ->where('id', '!=', $id)
                 ->first();
 
