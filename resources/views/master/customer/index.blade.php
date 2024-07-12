@@ -5,10 +5,12 @@
             <div class="az-content-body">
                 <div class="az-dashboard-one-title">
                     <h4 class="az-dashboard-title" id="title">Customer</h4>
-                    <a href="{{ route('customer.create') }}" class="btn btn-sm rounded-5 btn-primary">
-                        <i class="fas fa-plus mr-1"></i>
-                        Tambah Customer
-                    </a>
+                    @if (Illuminate\Support\Facades\Auth::user()->hasRole('cashier'))
+                        <a href="{{ route('customer.create') }}" class="btn btn-sm rounded-5 btn-primary">
+                            <i class="fas fa-plus mr-1"></i>
+                            Tambah Customer
+                        </a>
+                    @endif
                 </div>
                 <div class="table-responsive">
                     <input type="hidden" id="datatable-url" value="{{ $dt_route }}">
