@@ -497,13 +497,77 @@
 
     function dataTable() {
         const url = $('#datatable-url').val();
+
         $('#datatable-order').DataTable({
             autoWidth: false,
             responsive: true,
             processing: true,
             serverSide: true,
+            destroy: true,
             ajax: {
                 url: url,
+                error: function(xhr, error, code) {
+                    alertError(xhr.statusText);
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    width: '5%',
+                    searchable: false
+                },
+                {
+                    data: 'created_at',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'type',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'total_price',
+                    class: 'text-right',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'total_point',
+                    class: 'text-right',
+                    defaultContent: '-',
+                },
+                {
+                    data: 'action',
+                    width: '20%',
+                    defaultContent: '-',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+    }
+
+    function dataTableFilter() {
+        const url = $('#datatable-url').val();
+        let date_range = $('#periode').val();
+        let startdate = date_range.slice(0, 10);
+        let enddate = date_range.slice(-10);
+
+        let table = $('#datatable-order').DataTable({
+            destroy: true
+        });
+
+        table.rows().remove().draw();
+
+        $('#datatable-order').DataTable({
+            autoWidth: false,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url: url,
+                data: {
+                    startdate: startdate,
+                    enddate: enddate,
+                },
                 error: function(xhr, error, code) {
                     alertError(xhr.statusText);
                 }

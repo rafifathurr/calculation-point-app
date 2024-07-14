@@ -154,9 +154,13 @@ class OrderController extends Controller
     /**
      * Show datatable of resource.
      */
-    public function dataTable()
+    public function dataTable(Request $request)
     {
-        $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Order
+        if (isset($request->startdate) && isset($request->enddate)) {
+            $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->whereDate('created_at','>=',$request->startdate)->whereDate('created_at','<=',$request->enddate)->get(); // All Order
+        } else {
+            $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Order
+        }
 
         // DataTables Yajraa Configuration
         $dataTable = DataTables::of($list_of_orders)

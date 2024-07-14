@@ -15,5 +15,8 @@
 <script src="{{ asset('lib/datatables.net/jquery.dataTables.js') }}"></script>
 <script src="{{ asset('lib/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 @include('js.alert')
 @stack('js-bottom')
