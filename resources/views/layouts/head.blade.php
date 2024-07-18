@@ -22,7 +22,7 @@
     <!-- azia CSS -->
     <link rel="stylesheet" href="{{ asset('css/azia.css') }}" />
 
-    <link rel="shortcut icon" href="{{ asset('img/yasaka-icon.jpg') }}" />
+    <link rel="shortcut icon" href="{{ asset('img/yasaka-icon-new.png') }}" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <!-- CSRF -->

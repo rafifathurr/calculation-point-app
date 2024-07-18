@@ -1,15 +1,15 @@
 <div class="az-header">
     <div class="container">
         <div class="az-header-left">
-            <a href="{{ url('/') }}" class="az-logo"><img src="{{ asset('img/yasaka-icon-horizontal.png') }}"
-                    width="20%" alt=""></a>
+            <a href="{{ url('/') }}" class="az-logo"><img src="{{ asset('img/yasaka-icon-horizontal-new.png') }}"
+                    width="25%" alt=""></a>
             <a href="" id="azMenuShow" class="az-header-menu-icon d-lg-none"><span></span></a>
         </div>
         <!-- az-header-left -->
         <div class="az-header-menu">
             <div class="az-header-menu-header">
-                <a href="{{ url('/') }}" class="az-logo"><img src="{{ asset('img/yasaka-icon-horizontal.png') }}"
-                        width="30%" alt=""></a>
+                <a href="{{ url('/') }}" class="az-logo"><img src="{{ asset('img/yasaka-icon-horizontal-new.png') }}"
+                        width="50%" alt=""></a>
                 <a href="" class="close">&times;</a>
             </div>
             <!-- az-header-menu-header -->
