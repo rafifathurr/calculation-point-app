@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->integer('id')->autoIncrement();
             $table->string('name');
-            $table->integer('range_min');
+            $table->double('range_min');
             $table->double('range_max');
             $table->integer('created_by');
             $table->timestamp('created_at')->useCurrent();
