@@ -7,7 +7,7 @@
         <div class="az-card-signin h-100 rounded-10">
             <div class="az-signin-header mb-3">
                 <div class="text-center">
-                    <img src="{{ asset('img/yasaka-icon-horizontal.png') }}" width="60%" alt="">
+                    <img src="{{ asset('img/yasaka-icon-horizontal-new.png') }}" width="60%" alt="">
                 </div>
 
                 <form action="{{ route('authentication') }}" method="post" class="py-1">
