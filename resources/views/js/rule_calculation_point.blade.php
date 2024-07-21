@@ -85,7 +85,7 @@
                     $('#year').attr('required', true);
                     $('#month').attr('required', true);
                     $('#day').attr('required', true);
-                    $('#year').val('').change();
+                    $('#year').val('').trigger('change');
                 }
             }
         }

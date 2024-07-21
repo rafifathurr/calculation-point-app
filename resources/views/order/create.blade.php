@@ -153,8 +153,8 @@
     @push('js-bottom')
         @include('js.order')
         <script>
-            $('#customer_phone').val('').change();
-            $('#customer').val('').change();
+            $('#customer_phone').val('').trigger('change');
+            $('#customer').val('').trigger('change');
             catalogue();
         </script>
     @endpush
