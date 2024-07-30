@@ -7,14 +7,11 @@
                     <div class="az-dashboard-one-title">
                         <h4 class="az-dashboard-title" id="title">Order</h4>
                         <div class="my-auto text-right">
-                            <input type="text" class="form-control my-3" id="periode"
-                                placeholder="Pilih Durasi Tanggal">
-                            @if (Illuminate\Support\Facades\Auth::user()->hasRole('cashier'))
-                                <button type="button" onclick="createOrder()" class="btn btn-sm rounded-5 btn-primary">
-                                    <i class="fas fa-plus mr-1"></i>
-                                    Tambah Order
-                                </button>
-                            @endif
+                            <input type="text" class="form-control my-3" id="periode" placeholder="Pilih Durasi Tanggal">
+                            <button type="button" onclick="createOrder()" class="btn btn-sm rounded-5 btn-primary">
+                                <i class="fas fa-plus mr-1"></i>
+                                Tambah Order
+                            </button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -52,7 +49,6 @@
             $('#periode').on('change', function() {
                 dataTableFilter();
             })
-
         </script>
     @endpush
 @endsection

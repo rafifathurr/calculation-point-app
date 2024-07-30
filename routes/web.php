@@ -131,15 +131,6 @@ Route::group(['middleware' => ['role:owner']], function () {
  */
 Route::group(['middleware' => ['role:cashier']], function () {
     /**
-     * Route Order Module
-     */
-    Route::group(['controller' => OrderController::class, 'prefix' => 'order', 'as' => 'order.'], function () {
-        Route::get('create/{type}', 'create')->name('create');
-        Route::get('catalogue-menu', 'catalogueMenu')->name('catalogueMenu');
-    });
-    Route::resource('order', OrderController::class, ['except' => ['create', 'index', 'show']])->parameters(['order' => 'id']);
-
-    /**
      * Route Customer Module
      */
     Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
@@ -157,8 +148,10 @@ Route::group(['middleware' => ['role:owner|cashier']], function () {
      */
     Route::group(['controller' => OrderController::class, 'prefix' => 'order', 'as' => 'order.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
+        Route::get('create/{type}', 'create')->name('create');
+        Route::get('catalogue-menu', 'catalogueMenu')->name('catalogueMenu');
     });
-    Route::resource('order', OrderController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['order' => 'id']);
+    Route::resource('order', OrderController::class)->parameters(['order' => 'id']);
 
     /**
      * Route Customer Module

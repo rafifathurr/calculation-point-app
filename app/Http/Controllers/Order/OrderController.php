@@ -40,7 +40,7 @@ class OrderController extends Controller
                 $data['title'] = 'Tambah Order';
                 $total_percentage = 0;
                 $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->sum('percentage');
-                $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->sum('percentage');
+                $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->whereNull('year')->sum('percentage');
                 $total_percentage += RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->sum('percentage');
                 $data['total_percentage'] = $total_percentage / 100;
             } else {
