@@ -157,7 +157,11 @@ class OrderController extends Controller
     public function dataTable(Request $request)
     {
         if (isset($request->startdate) && isset($request->enddate)) {
-            $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->whereDate('created_at','>=',$request->startdate)->whereDate('created_at','<=',$request->enddate)->get(); // All Order
+            $list_of_orders = Order::whereNull('deleted_by')
+                ->whereNull('deleted_at')
+                ->whereDate('created_at', '>=', $request->startdate)
+                ->whereDate('created_at', '<=', $request->enddate)
+                ->get(); // All Order
         } else {
             $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Order
         }
@@ -183,11 +187,9 @@ class OrderController extends Controller
                 $btn_action = '<div align="center">';
                 $btn_action .= '<a href="' . route('order.show', ['id' => $data->id]) . '" class="btn btn-sm btn-primary rounded-5" title="Detail"><i class="fas fa-eye"></i></a>';
 
-                // Accessing only for Cashier
-                if (User::find(Auth::user()->id)->hasRole('cashier')) {
-                    $btn_action .= '<a href="' . route('order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning rounded-5 ml-2" title="Ubah"><i class="fas fa-pencil-alt"></i></a>';
-                    $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
-                }
+                $btn_action .= '<a href="' . route('order.edit', ['id' => $data->id]) . '" class="btn btn-sm btn-warning rounded-5 ml-2" title="Ubah"><i class="fas fa-pencil-alt"></i></a>';
+                $btn_action .= '<button class="btn btn-sm btn-danger rounded-5 ml-2" onclick="destroyRecord(' . $data->id . ')" title="Hapus"><i class="fas fa-trash"></i></button>';
+
                 $btn_action .= '</div>';
                 return $btn_action;
             })
