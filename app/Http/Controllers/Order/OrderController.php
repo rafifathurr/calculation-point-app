@@ -270,7 +270,7 @@ class OrderController extends Controller
                         if ($order_item && $order_item_promo) {
                             // Get All Current Rule Available
                             $rule_all = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->get()->toArray();
-                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->get()->toArray();
+                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->whereNull('year')->get()->toArray();
                             $rule_date_with_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->get()->toArray();
 
                             // Merge to single array
@@ -369,7 +369,7 @@ class OrderController extends Controller
                         if ($order_item) {
                             // Get All Current Rule Available
                             $rule_all = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->whereNull('day')->whereNull('month')->whereNull('year')->get()->toArray();
-                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->get()->toArray();
+                            $rule_date_without_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->whereNull('year')->get()->toArray();
                             $rule_date_with_year = RuleCalculationPoint::whereNull('deleted_by')->whereNull('deleted_at')->where('status', 1)->where('day', date('d'))->where('month', date('m'))->where('year', date('Y'))->get()->toArray();
 
                             // Merge to single array
