@@ -127,19 +127,6 @@ Route::group(['middleware' => ['role:owner']], function () {
 });
 
 /**
- * Owner Route Access
- */
-Route::group(['middleware' => ['role:cashier']], function () {
-    /**
-     * Route Customer Module
-     */
-    Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
-        Route::get('datatable', 'dataTable')->name('dataTable');
-    });
-    Route::resource('customer', CustomerController::class, ['except' => ['index', 'show']])->parameters(['customer' => 'id']);
-});
-
-/**
  * Owner and Cashier Route Access
  */
 Route::group(['middleware' => ['role:owner|cashier']], function () {
@@ -159,7 +146,7 @@ Route::group(['middleware' => ['role:owner|cashier']], function () {
     Route::group(['controller' => CustomerController::class, 'prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::get('datatable', 'dataTable')->name('dataTable');
     });
-    Route::resource('customer', CustomerController::class, ['except' => ['create', 'store', 'edit', 'update', 'destroy']])->parameters(['customer' => 'id']);
+    Route::resource('customer', CustomerController::class)->parameters(['customer' => 'id']);
 
     /**
      * Route Menu Module
