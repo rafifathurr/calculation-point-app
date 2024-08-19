@@ -161,9 +161,10 @@ class OrderController extends Controller
                 ->whereNull('deleted_at')
                 ->whereDate('created_at', '>=', $request->startdate)
                 ->whereDate('created_at', '<=', $request->enddate)
+                ->orderBy('created_at', 'desc')
                 ->get(); // All Order
         } else {
-            $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->get(); // All Order
+            $list_of_orders = Order::whereNull('deleted_by')->whereNull('deleted_at')->orderBy('created_at', 'desc')->get(); // All Order
         }
 
         // DataTables Yajraa Configuration
